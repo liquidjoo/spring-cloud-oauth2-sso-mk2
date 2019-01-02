@@ -31,6 +31,8 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+    compile('org.springframework.retry:spring-retry:1.2.2.RELEASE')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compileOnly('org.projectlombok:lombok')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
