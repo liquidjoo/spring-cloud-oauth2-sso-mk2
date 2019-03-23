@@ -1,4 +1,4 @@
 rootProject.name = 'project-mark'
 include 'eureka-server'
 include 'contents'
-include 'sqs'
+include 'queue'
