@@ -1,13 +1,13 @@
-package io.bluemoon.sqs;
+package io.bluemoon.queue;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SqsApplication {
+public class QueueApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SqsApplication.class, args);
+        SpringApplication.run(QueueApplication.class, args);
     }
 
 }
