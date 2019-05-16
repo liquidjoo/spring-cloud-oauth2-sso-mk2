@@ -1,6 +1,7 @@
 package io.bluemoon.authorizationserver.config;
 
 import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,29 +24,31 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
+public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter {
 
+    @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
+    @Autowired
     private ApprovalStore approvalStore;
     private ClientDetailsService clientDetailsService;
     private AuthenticationManager authenticationManager;
     private DataSource dataSource;
     private CustomUserDetailsServiceImpl customUserDetailsService;
 
-    public AuthServerConfig(
+    public OAuth2SsoServerConfig(
+//            AuthorizationCodeServices authorizationCodeServices,
+//            ApprovalStore approvalStore,
             ClientDetailsService clientDetailsService,
             AuthenticationManager authenticationManager,
             DataSource dataSource,
-            CustomUserDetailsServiceImpl customUserDetailsService,
-            AuthorizationCodeServices authorizationCodeServices,
-            ApprovalStore approvalStore
+            CustomUserDetailsServiceImpl customUserDetailsService
     ) {
+//        this.authorizationCodeServices = authorizationCodeServices;
+//        this.approvalStore = approvalStore;
         this.clientDetailsService = clientDetailsService;
         this.authenticationManager = authenticationManager;
         this.dataSource = dataSource;
         this.customUserDetailsService = customUserDetailsService;
-        this.authorizationCodeServices = authorizationCodeServices;
-        this.approvalStore = approvalStore;
     }
 
     @Override
@@ -67,9 +70,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 // refresh token
                 .userDetailsService(customUserDetailsService)
                 // approval store
-                .approvalStore(jdbcApprovalStore(dataSource))
+                .approvalStore(approvalStore)
                 // code service
-                .authorizationCodeServices(jdbcAuthorizationCodeServices(dataSource));
+                .authorizationCodeServices(authorizationCodeServices);
     }
 
     @Override
