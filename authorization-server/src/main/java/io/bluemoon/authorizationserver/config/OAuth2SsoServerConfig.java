@@ -111,12 +111,12 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
         return new JdbcApprovalStore(dataSource);
     }
 
-//    @Bean
-//    public JwtAccessTokenConverter jwtAccessTokenConverter() {
-//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//        converter.setSigningKey("abc");
-////        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), "foobar".toCharArray()).getKeyPair("test");
-////        converter.setKeyPair(keyPair);
-//        return converter;
-//    }
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("abc");
+//        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), "foobar".toCharArray()).getKeyPair("test");
+//        converter.setKeyPair(keyPair);
+        return converter;
+    }
 }
