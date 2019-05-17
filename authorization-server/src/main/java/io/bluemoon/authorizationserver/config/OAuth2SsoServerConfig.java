@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -19,8 +20,11 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
+import java.security.KeyPair;
 
 @Configuration
 @EnableAuthorizationServer
@@ -54,9 +58,9 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // auth server에 대한 설정
-//        security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+        security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 //        properties 로 해결 가능
-        super.configure(security);
+//        super.configure(security);
     }
 
     @Override
@@ -73,12 +77,17 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
                 .approvalStore(approvalStore)
                 // code service
                 .authorizationCodeServices(authorizationCodeServices);
+
+//                .accessTokenConverter(jwtAccessTokenConverter());
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         // client 에 대한 설정
         clients.withClientDetails(clientDetailsService);
+//        clients.inMemory().withClient("system1").secret("1234")
+//                .authorizedGrantTypes("authorization_code", "refresh_token","password")
+//                .scopes("read");
     }
 
     @Bean
@@ -101,4 +110,13 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
     public ApprovalStore jdbcApprovalStore(DataSource dataSource) {
         return new JdbcApprovalStore(dataSource);
     }
+
+//    @Bean
+//    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+//        converter.setSigningKey("abc");
+////        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), "foobar".toCharArray()).getKeyPair("test");
+////        converter.setKeyPair(keyPair);
+//        return converter;
+//    }
 }

@@ -41,20 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**").permitAll()
+        http.formLogin().loginPage("/login").permitAll()
                 .and()
-            .logout()
-                .permitAll();
+                .authorizeRequests().anyRequest().authenticated();
 
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //
-        auth
-                .inMemoryAuthentication()
-                .withUser("user1").password("1234").roles("USER");
-    }
 
     /**
      * authentication Object managing
