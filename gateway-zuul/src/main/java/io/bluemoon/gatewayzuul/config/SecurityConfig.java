@@ -18,10 +18,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationProcessingFilter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.csrf.*;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +35,7 @@ import java.util.regex.Pattern;
 @Configuration
 @EnableOAuth2Sso
 @EnableResourceServer
-@Order(value = 0)
+@Order(value = -1)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
 //    @Bean
@@ -52,9 +49,9 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
                 .and()
-                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher()).csrfTokenRepository(csrfTokenRepository())
-                .and()
-                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+//                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher()).csrfTokenRepository(csrfTokenRepository())
+//                .and()
+//                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
                 .logout().permitAll()
                 .logoutSuccessUrl("/");
     }

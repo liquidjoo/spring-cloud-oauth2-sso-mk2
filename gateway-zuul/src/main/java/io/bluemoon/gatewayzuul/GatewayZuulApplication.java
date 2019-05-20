@@ -7,12 +7,17 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.token.AccessTokenProviderChain;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +29,17 @@ public class GatewayZuulApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayZuulApplication.class, args);
+    }
+
+    @Controller
+    @RequestMapping("/")
+    public static class TestController {
+        @RequestMapping(method = RequestMethod.GET)
+        public String test(Principal principal) {
+            System.out.println(principal.getName());
+            System.out.println(principal.toString());
+            return "aa";
+        }
     }
 
 //    @Bean

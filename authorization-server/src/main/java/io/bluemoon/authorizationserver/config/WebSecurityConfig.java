@@ -14,7 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
+//@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
+@Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private CustomUserDetailsServiceImpl customUserDetailsService;
@@ -42,6 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin().loginPage("/login").permitAll()
+                .and()
+                .requestMatchers().antMatchers("/login", "/logout", "/oauth/authorize", "/oauth/confirm_access")
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
 

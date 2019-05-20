@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @Controller
 public class SsoController {
@@ -66,6 +67,12 @@ public class SsoController {
         System.out.println(map.toString());
 
         return "aa";
+    }
+
+    @RequestMapping(value = "/user")
+    @ResponseBody
+    public Principal user(Principal user) {
+        return user;
     }
 
 }
