@@ -32,10 +32,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+
+
 @Configuration
 @EnableOAuth2Sso
 @EnableResourceServer
-@Order(value = -1)
+@Order(value = 0)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
 //    @Bean

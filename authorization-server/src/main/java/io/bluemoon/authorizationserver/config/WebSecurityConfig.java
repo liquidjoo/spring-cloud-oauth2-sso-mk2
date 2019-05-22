@@ -2,6 +2,7 @@ package io.bluemoon.authorizationserver.config;
 
 import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +13,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+
+import javax.servlet.Filter;
 
 @Configuration
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
+@EnableOAuth2Client
 @Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -80,4 +87,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static NoOpPasswordEncoder passwordEncoder() {
         return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
+
 }
