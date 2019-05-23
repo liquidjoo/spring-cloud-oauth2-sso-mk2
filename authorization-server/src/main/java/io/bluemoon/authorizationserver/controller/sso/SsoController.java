@@ -1,17 +1,23 @@
 package io.bluemoon.authorizationserver.controller.sso;
 
+import io.bluemoon.authorizationserver.config.annotation.SocialUser;
 import io.bluemoon.authorizationserver.domain.UserResponseWrapper;
 import io.bluemoon.authorizationserver.domain.oauth.accesstoken.AccessToken;
+import io.bluemoon.authorizationserver.domain.social.SocialType;
+import io.bluemoon.authorizationserver.domain.user.User;
 import io.bluemoon.authorizationserver.service.sso.SsoService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class SsoController {
@@ -74,5 +80,35 @@ public class SsoController {
     public Principal user(Principal user) {
         return user;
     }
+
+    @GetMapping(value = "/loginSuccess")
+    public String loginComplete(@SocialUser User user) {
+        return "redirect:/login/success";
+    }
+
+    @GetMapping(value = "/login/success")
+    @ResponseBody
+    public String test2() {
+        return "kkk";
+    }
+
+
+
+
+//    @GetMapping(value = "/{facebook|google|kakao}/complete")
+//    public String loginComplete(HttpSession session) {
+//        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+//        Map<String, String> map = (HashMap<String, String>) authentication.getUserAuthentication().getDetails();
+//        session.setAttribute("user", User.builder()
+//                .username(map.get("username"))
+//                .email(map.get("email"))
+//                .principal(map.get("id"))
+//                .socialType(SocialType.FACEBOOK)
+//                .createdAt(LocalDateTime.now())
+//                .updatedAt(LocalDateTime.now())
+//                .build()
+//        );
+//        return "redirect:/";
+//    }
 
 }

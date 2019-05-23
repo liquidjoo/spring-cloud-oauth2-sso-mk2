@@ -1,11 +1,6 @@
 package io.bluemoon.authorizationserver.config;
 
-import io.bluemoon.authorizationserver.domain.social.ClientResources;
 import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,27 +11,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import javax.servlet.Filter;
-
 @Configuration
 @EnableWebSecurity
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
-@EnableOAuth2Client
 @Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private CustomUserDetailsServiceImpl customUserDetailsService;
-
-    @Qualifier("oauth2ClientContext")
-    @Autowired
-    private OAuth2ClientContext oAuth2ClientContext;
 
     public WebSecurityConfig(
             CustomUserDetailsServiceImpl customUserDetailsService
@@ -63,8 +48,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/", "/login/**", "/css/**", "/images/**", "/js/**",
-                        "/console/**").permitAll()
+                        "/console/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
+            .and()
+                .oauth2Login()
+                .defaultSuccessUrl("/loginSuccess")
+                .failureUrl("/loginFailure")
             .and()
                 .headers().frameOptions().disable()
             .and()
@@ -78,8 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSSIONID")
                 .invalidateHttpSession(true)
             .and()
-                .addFilterBefore(filter, CsrfFilter.class)
-                .csrf().disable();
+                .addFilterBefore(filter, CsrfFilter.class);
+//                .csrf().disable();
 //        http.formLogin().loginPage("/login").permitAll()
 //                .and()
 //                .requestMatchers().antMatchers("/login", "/logout", "/oauth/authorize", "/oauth/confirm_access")
@@ -121,12 +110,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // social login
-
-
-    @Bean
-    @ConfigurationProperties("facebook")
-    public ClientResources facebook() {
-        return new ClientResources();
-    }
+//    @Bean
+//    public FilterRegistrationBean oauth2ClientFilterRegistration(
+//            OAuth2ClientContextFilter filter
+//    ) {
+//        FilterRegistrationBean registration = new FilterRegistrationBean();
+//        registration.setFilter(new ForwardedHeaderFilter());
+//        registration.setFilter(filter);
+//        registration.setOrder(-100);
+//        return registration;
+//    }
+//
+//    private Filter oauth2Filter() {
+//        CompositeFilter filter = new CompositeFilter();
+//        List<Filter> filters = new ArrayList<>();
+//        filters.add(oauth2Filter(facebook(), "/login/facebook", SocialType.FACEBOOK));
+//
+//        filter.setFilters(filters);
+//        return filter;
+//    }
+//
+//    private Filter oauth2Filter(ClientResources client, String path, SocialType socialType) {
+//        OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
+//        OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oAuth2ClientContext);
+//        filter.setRestTemplate(template);
+//        filter.setTokenServices(new UserTokenService(client, socialType));
+//        filter.setAuthenticationSuccessHandler((request, response, authentication) ->
+//                response.sendRedirect("/" + socialType.getVaule() + "/complete"));
+//        filter.setAuthenticationFailureHandler((request, response, exception) ->
+//                response.sendRedirect("/error"));
+//        return filter;
+//    }
+//
+//    @Bean
+//    @ConfigurationProperties("facebook")
+//    public ClientResources facebook() {
+//        return new ClientResources();
+//    }
 
 }

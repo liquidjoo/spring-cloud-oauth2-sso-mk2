@@ -16,5 +16,9 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+<div>
+    <a class="facebook-login-text" href="/oauth2/authorization/facebook">facebook으로 로그인</a>
+</div>
 </body>
 </html>

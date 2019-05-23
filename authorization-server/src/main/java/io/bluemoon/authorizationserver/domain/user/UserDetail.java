@@ -21,9 +21,9 @@ public class UserDetail implements UserDetails {
 
     public UserDetail(User user) {
         this.id = user.getId();
-        this.username = user.getUserName();
+        this.username = user.getUsername();
         this.password = user.getPassword();
-        this.userType = user.getUserType();
+//        this.userType = user.getSocialType();
     }
 
     @Override
