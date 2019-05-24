@@ -25,12 +25,14 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
+        System.out.println(user);
 
         if (user == null) {
             throw new UsernameNotFoundException("UsernameNotFound[" + username + "]");
         }
 
         UserDetail userDetail = createUser(user);
+        System.out.println(userDetail);
         return userDetail;
     }
 
@@ -41,12 +43,13 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
      */
     private UserDetail createUser(User user) {
         UserDetail userDetail = new UserDetail(user);
+        userDetail.setRoles(Arrays.asList("ROLE_USER"));
 
-        if (userDetail.getUserType().equals("1")) {
-            userDetail.setRoles(Arrays.asList("ROLE_ADMIN"));
-        } else {
-            userDetail.setRoles(Arrays.asList("ROLE_USER"));
-        }
+//        if (userDetail.getSocial_type().getVaule().equals("FACEBOOK")) {
+//            userDetail.setRoles(Arrays.asList("ROLE_FACEBOOK"));
+//        } else {
+//            userDetail.setRoles(Arrays.asList("ROLE_USER"));
+//        }
         return userDetail;
     }
 }

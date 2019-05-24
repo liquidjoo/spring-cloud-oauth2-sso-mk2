@@ -11,12 +11,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Configuration
-@EnableWebSecurity
+//@EnableOAuth2Client
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
 @Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -45,35 +46,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
-        http
-            .authorizeRequests()
-                .antMatchers("/", "/login/**", "/css/**", "/images/**", "/js/**",
-                        "/console/**", "/oauth2/**").permitAll()
-                .anyRequest().authenticated()
-            .and()
-                .oauth2Login()
-                .defaultSuccessUrl("/loginSuccess")
-                .failureUrl("/loginFailure")
-            .and()
-                .headers().frameOptions().disable()
-            .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-            .and()
-                .formLogin().loginPage("/login")
-            .and()
-                .logout()
-                .logoutUrl("/logout")
-                .deleteCookies("JSESSSIONID")
-                .invalidateHttpSession(true)
-            .and()
-                .addFilterBefore(filter, CsrfFilter.class);
+//        http
+//            .formLogin().loginPage("/login").permitAll()
+//            .and()
+//            .authorizeRequests()
+//                .antMatchers("/", "/login/**", "/css/**", "/images/**", "/js/**", "/oauth/authorize", "/oauth/confirm_access",
+//                        "/console/**", "/oauth2/**").permitAll()
+//                .anyRequest().authenticated();
+//            .and()
+//                .oauth2Login();
+//                .loginPage("/login").permitAll()
+////                .defaultSuccessUrl("http://localhost:8765/login")
+//                .failureUrl("/loginFailure")
+//            .and()
+//                .headers().frameOptions().disable()
+//            .and()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+//
+//            .and()
+//                .logout()
+//                .logoutUrl("/logout")
+//                .deleteCookies("JSESSSIONID")
+//                .invalidateHttpSession(true)
+//            .and()
+//                .addFilterBefore(filter, CsrfFilter.class);
 //                .csrf().disable();
-//        http.formLogin().loginPage("/login").permitAll()
-//                .and()
-//                .requestMatchers().antMatchers("/login", "/logout", "/oauth/authorize", "/oauth/confirm_access")
-//                .and()
-//                .authorizeRequests().anyRequest().authenticated();
+        http.formLogin().loginPage("/login").permitAll()
+                .and()
+                .requestMatchers().antMatchers("/login/**", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/oauth2/**")
+                .and()
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .oauth2Login()
+                .loginPage("/login").permitAll();
 
     }
 

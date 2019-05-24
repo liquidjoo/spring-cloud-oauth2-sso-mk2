@@ -1,5 +1,6 @@
 package io.bluemoon.authorizationserver.domain.user;
 
+import io.bluemoon.authorizationserver.domain.social.SocialType;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,14 +17,12 @@ public class UserDetail implements UserDetails {
     private Long id;
     private String username;
     private String password;
-    private String userType;
     private List<String> roles;
 
     public UserDetail(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-//        this.userType = user.getSocialType();
     }
 
     @Override

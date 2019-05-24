@@ -98,8 +98,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      */
     private User getModernUser(SocialType socialType, Map<String, Object> map) {
         return User.builder()
-                .username(String.valueOf(map.get("name")))
-                .email(String.valueOf(map.get("mail")))
+                .name(String.valueOf(map.get("name")))
+                .email(String.valueOf(map.get("email")))
                 .principal(String.valueOf(map.get("id")))
                 .socialType(socialType)
                 .createdAt(LocalDateTime.now())

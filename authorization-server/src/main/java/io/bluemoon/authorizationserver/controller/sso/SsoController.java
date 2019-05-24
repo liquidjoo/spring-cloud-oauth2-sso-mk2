@@ -82,8 +82,10 @@ public class SsoController {
     }
 
     @GetMapping(value = "/loginSuccess")
+    @ResponseBody
     public String loginComplete(@SocialUser User user) {
-        return "redirect:/login/success";
+        System.out.println(user);
+        return "kkkkkkkkk";
     }
 
     @GetMapping(value = "/login/success")

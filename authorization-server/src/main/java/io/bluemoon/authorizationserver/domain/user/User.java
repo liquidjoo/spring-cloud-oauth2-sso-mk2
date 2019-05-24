@@ -21,6 +21,9 @@ public class User {
     private String username;
 
     @Column
+    private String name;
+
+    @Column
     private String password;
 
     @Column
@@ -50,9 +53,10 @@ public class User {
 //    private Date regDate = new Date();
 
     @Builder
-    public User(String username, String password, String email, String principal,
+    public User(String username, String name, String password, String email, String principal,
                 SocialType socialType, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.username = username;
+        this.name = name;
         this.password = password;
         this.email = email;
         this.principal = principal;
