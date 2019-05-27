@@ -1,6 +1,8 @@
 package io.bluemoon.authorizationserver.config;
 
+import io.bluemoon.authorizationserver.config.handler.CustomAuthFailureHandler;
 import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -12,7 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 //import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -21,6 +25,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
 @Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    CustomAuthFailureHandler customAuthFailureHandler;
 
     private CustomUserDetailsServiceImpl customUserDetailsService;
 
@@ -58,8 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .loginPage("/login").permitAll()
 ////                .defaultSuccessUrl("http://localhost:8765/login")
 //                .failureUrl("/loginFailure")
-//            .and()
-//                .headers().frameOptions().disable()
+
 //            .and()
 //                .exceptionHandling()
 //                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
@@ -78,8 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
+                .headers().frameOptions().disable()
+                .and()
                 .oauth2Login()
-                .loginPage("/login").defaultSuccessUrl("/mk-auth/login/success").permitAll();
+//                .loginPage("/login").defaultSuccessUrl("/mk-auth/login/success").permitAll();
+                .loginPage("/login").permitAll().defaultSuccessUrl("/login/success", true).failureHandler(customAuthFailureHandler);
 //                .and()
 //                .addFilterBefore(filter, CsrfFilter.class);
 

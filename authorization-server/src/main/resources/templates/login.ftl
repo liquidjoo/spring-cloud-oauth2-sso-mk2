@@ -18,11 +18,11 @@
 </div>
 
 <div>
-    <a class="facebook-login-text" href="/mk-auth/oauth2/authorization/facebook">facebook으로 로그인</a>
+    <a class="facebook-login-text" href="/mk-auth/oauth2/authorization/facebook">facebook 로그인</a>
 </div>
 
 <div>
-    <a class="facebook-login-text" href="/mk-auth/oauth2/authorization/google">facebook으로 로그인</a>
+    <a class="google-login-text" href="/mk-auth/oauth2/authorization/google">google 로그인</a>
 </div>
 </body>
 </html>
