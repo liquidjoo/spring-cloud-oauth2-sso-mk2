@@ -81,15 +81,14 @@ public class SsoController {
         return user;
     }
 
-//    @GetMapping(value = "/login/success")
-//    @ResponseBody
-//    public String loginComplete(@SocialUser User user) {
-//        System.out.println(user);
-//        return "redirect:/mk-auth/login/user";
-////        return "why not";
-//    }
-
     @GetMapping(value = "/login/success")
+    public String loginComplete(@SocialUser User user) {
+        System.out.println(user);
+        return "redirect:https://924680a1.ngrok.io/login";
+//        return "why not";
+    }
+
+    @GetMapping(value = "/login/test")
     @ResponseBody
     public String test2() {
         return "kkk";
