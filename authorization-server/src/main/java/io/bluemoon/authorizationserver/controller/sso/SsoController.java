@@ -81,18 +81,18 @@ public class SsoController {
         return user;
     }
 
-    @GetMapping(value = "/loginSuccess")
+    @GetMapping(value = "/login/success")
     @ResponseBody
     public String loginComplete(@SocialUser User user) {
         System.out.println(user);
         return "kkkkkkkkk";
     }
 
-    @GetMapping(value = "/login/success")
-    @ResponseBody
-    public String test2() {
-        return "kkk";
-    }
+//    @GetMapping(value = "/login/success")
+//    @ResponseBody
+//    public String test2() {
+//        return "kkk";
+//    }
 
 
 

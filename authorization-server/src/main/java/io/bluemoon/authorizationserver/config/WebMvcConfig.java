@@ -16,13 +16,13 @@ import java.util.List;
 @EnableWebSecurity
 public class WebMvcConfig implements WebMvcConfigurer {
 
-//    @Autowired
-//    private UserArgumentResolver userArgumentResolver;
-//
-//    @Override
-//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-//        resolvers.add(userArgumentResolver);
-//    }
+    @Autowired
+    private UserArgumentResolver userArgumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(userArgumentResolver);
+    }
 
     @Bean
     FilterRegistrationBean forwardedHeaderFilter() {

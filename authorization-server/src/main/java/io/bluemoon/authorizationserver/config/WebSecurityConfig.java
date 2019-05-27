@@ -79,7 +79,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .oauth2Login()
-                .loginPage("/login").permitAll();
+                .loginPage("/login").defaultSuccessUrl("/mk-auth/login/success").permitAll();
+//                .and()
+//                .addFilterBefore(filter, CsrfFilter.class);
 
     }
 
