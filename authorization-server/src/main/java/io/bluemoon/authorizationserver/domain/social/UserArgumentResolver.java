@@ -62,7 +62,9 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 //                User convertUser = convertUser(String.valueOf(authentication.getAuthorities().toArray()[0]), map);
                 OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
                 Map<String, Object> map = authentication.getPrincipal().getAttributes();
+                System.out.println(map.toString());
                 User convertUser = convertUser(authentication.getAuthorizedClientRegistrationId(), map);
+                System.out.println(convertUser.toString());
 
                 user = userRepository.findByEmail(convertUser.getEmail());
                 if (user == null) {
@@ -98,14 +100,35 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      * @return
      */
     private User getModernUser(SocialType socialType, Map<String, Object> map) {
-        return User.builder()
-                .name(String.valueOf(map.get("name")))
-                .email(String.valueOf(map.get("email")))
-                .principal(String.valueOf(map.get("id")))
-                .socialType(socialType)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+
+        if (socialType.getVaule().equals("facebook")) {
+            return User.builder()
+                    .name(String.valueOf(map.get("name")))
+                    .email(String.valueOf(map.get("email")))
+                    .principal(String.valueOf(map.get("id")))
+                    .socialType(socialType)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+        } else if (socialType.getVaule().equals("google")) {
+            return User.builder()
+                    .name(String.valueOf(map.get("name")))
+                    .email(String.valueOf(map.get("email")))
+                    .principal(String.valueOf(map.get("sub")))
+                    .socialType(socialType)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+        } else {
+            return User.builder()
+                    .name(String.valueOf(map.get("name")))
+                    .email(String.valueOf(map.get("email")))
+                    .principal(String.valueOf(map.get("id")))
+                    .socialType(socialType)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+        }
     }
 
     /**
@@ -116,10 +139,21 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      * @param map
      */
     private void setRoleIfNotSame(User user, OAuth2AuthenticationToken authentication, Map<String, Object> map) {
+        Map<String, Object> principalMap = new HashMap<>();
+        if (user.getSocialType().getVaule().equals("google")) {
+            principalMap.put("id", map.get("sub"));
+            principalMap.put("name", map.get("name"));
+            principalMap.put("email", map.get("email"));
+        } else {
+            principalMap = map;
+        }
+
+        // spring security authentiaction params setting
+        // 후.. 찾기 힘들었다..
         if (!authentication.getAuthorities().contains(
                 new SimpleGrantedAuthority(user.getSocialType().getRoleType()))) {
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(map, "N/A", AuthorityUtils.createAuthorityList(user.getSocialType().getRoleType()))
+                    new UsernamePasswordAuthenticationToken(principalMap, "N/A", AuthorityUtils.createAuthorityList(user.getSocialType().getRoleType()))
             );
         }
     }
