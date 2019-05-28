@@ -61,6 +61,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 //                Map<String, String> map = (HashMap<String, String>) authentication.getUserAuthentication().getDetails();
 //                User convertUser = convertUser(String.valueOf(authentication.getAuthorities().toArray()[0]), map);
                 OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+                // SecurityContext 사용자의 보호 및 인증된 세션
                 Map<String, Object> map = authentication.getPrincipal().getAttributes();
                 System.out.println(map.toString());
                 User convertUser = convertUser(authentication.getAuthorizedClientRegistrationId(), map);
