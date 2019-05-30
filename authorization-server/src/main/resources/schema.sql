@@ -1,4 +1,4 @@
-
+use uneed_oauth;
 -- used in tests that use Mysql Local
 create table oauth_client_details (
   client_id VARCHAR(255) PRIMARY KEY,
@@ -7,8 +7,6 @@ create table oauth_client_details (
   scope VARCHAR(255),
   authorized_grant_types VARCHAR(255),
   web_server_redirect_uri VARCHAR(255),
-  logout_uri VARCHAR(255),
-  base_uri VARCHAR(255),
   authorities VARCHAR(255),
   access_token_validity INTEGER,
   refresh_token_validity INTEGER,
