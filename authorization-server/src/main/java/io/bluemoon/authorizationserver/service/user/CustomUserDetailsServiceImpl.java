@@ -43,7 +43,6 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
         }
 
         CustomUserDetails userDetail = new CustomUserDetails(user, urs);
-        userDetail.getAuthorities();
         System.out.println(userDetail);
         return userDetail;
     }

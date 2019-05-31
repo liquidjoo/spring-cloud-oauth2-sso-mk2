@@ -3,8 +3,11 @@ package io.bluemoon.authorizationserver.domain.social;
 import io.bluemoon.authorizationserver.config.annotation.SocialUser;
 import io.bluemoon.authorizationserver.domain.user.User;
 import io.bluemoon.authorizationserver.domain.user.UserRepository;
+import io.bluemoon.authorizationserver.domain.user.UserRole;
+import io.bluemoon.authorizationserver.domain.user.UserRoleRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,16 +23,24 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private UserRepository userRepository;
+    private UserRoleRepository userRoleRepository;
 
-    public UserArgumentResolver(UserRepository userRepository) {
+    public UserArgumentResolver(
+            UserRepository userRepository,
+            UserRoleRepository userRoleRepository
+    ) {
         this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
+
     }
 
     @Override
@@ -70,8 +81,18 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
                 user = userRepository.findByEmail(convertUser.getEmail());
                 if (user == null) {
                     user = userRepository.save(convertUser);
+                    UserRole userRole = UserRole.builder()
+                            .role("USER")
+                            .user(user)
+                            .build();
+                    UserRole userRoles = userRoleRepository.save(userRole);
+
                 }
-                setRoleIfNotSame(user, authentication, map);
+
+                List<UserRole> userRoles = userRoleRepository.findByUser(user);
+                // role 부여
+
+               setRoleIfNotSame(user, authentication, map, userRoles);
                 session.setAttribute("user", user);
             } catch (ClassCastException e) {
                 return user;
@@ -139,7 +160,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      * @param authentication
      * @param map
      */
-    private void setRoleIfNotSame(User user, OAuth2AuthenticationToken authentication, Map<String, Object> map) {
+    private void setRoleIfNotSame(User user, OAuth2AuthenticationToken authentication, Map<String, Object> map, List<UserRole> userRoles) {
         Map<String, Object> principalMap = new HashMap<>();
         if (user.getSocialType().getVaule().equals("google")) {
             principalMap.put("id", map.get("sub"));
@@ -151,12 +172,30 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
         // spring security authentiaction params setting
         // 후.. 찾기 힘들었다..
-        if (!authentication.getAuthorities().contains(
-                new SimpleGrantedAuthority(user.getSocialType().getRoleType()))) {
-            SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(principalMap, "N/A", AuthorityUtils.createAuthorityList(user.getSocialType().getRoleType()))
-            );
+//        if (!authentication.getAuthorities().contains(
+//                new SimpleGrantedAuthority(user.getSocialType().getRoleType()))) {
+//            SecurityContextHolder.getContext().setAuthentication(
+//                    new UsernamePasswordAuthenticationToken(principalMap, "N/A", AuthorityUtils.createAuthorityList(user.getSocialType().getRoleType()))
+//            );
+//        }
+
+        // social default user role
+        if (userRoles != null) {
+            List<GrantedAuthority> authoritiesRole = new ArrayList<>(userRoles.size());
+            for (UserRole ur : userRoles) {
+                authoritiesRole.add(new SimpleGrantedAuthority(ur.getRole()));
+            }
+
+            if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+
+                SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(principalMap, "N/A", authoritiesRole)
+                );
+            }
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principalMap, "N/A", AuthorityUtils.createAuthorityList("ROLE_NONE")));
         }
+
     }
 
 
