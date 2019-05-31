@@ -1,17 +1,18 @@
 package io.bluemoon.authorizationserver.domain.user;
 
 import io.bluemoon.authorizationserver.domain.social.SocialType;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +37,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    private Collection<UserRole> userRole;
+
     @Column
     private LocalDateTime createdAt;
 
@@ -53,15 +57,14 @@ public class User {
 //    private Date regDate = new Date();
 
     @Builder
-    public User(String username, String name, String password, String email, String principal,
-                SocialType socialType, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(String username, String name, String password, String email, String principal, LocalDateTime createdAt, LocalDateTime updatedAt, SocialType socialType) {
         this.username = username;
         this.name = name;
         this.password = password;
         this.email = email;
         this.principal = principal;
-        this.socialType = socialType;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.socialType = socialType;
     }
 }

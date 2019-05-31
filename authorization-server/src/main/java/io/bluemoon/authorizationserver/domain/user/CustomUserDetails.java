@@ -11,24 +11,25 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-public class UserDetail implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private static final long serialVersionUID = 6396079419309274853L;
     private Long id;
     private String username;
     private String password;
-    private List<String> roles;
+    private List<String> userRole;
 
-    public UserDetail(User user) {
+    public CustomUserDetails(User user, List<String> userRole) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
+        this.userRole = userRole;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role: roles) {
+        for (String role: userRole) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;

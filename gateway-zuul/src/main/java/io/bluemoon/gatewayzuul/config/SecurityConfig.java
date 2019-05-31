@@ -38,7 +38,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
+                .antMatchers("/", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
                 .and()
 //                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher()).csrfTokenRepository(csrfTokenRepository())
 //                .and()

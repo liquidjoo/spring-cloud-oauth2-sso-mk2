@@ -78,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //            .and()
 //                .addFilterBefore(filter, CsrfFilter.class);
 //                .csrf().disable();
-        http.formLogin().loginPage("/login").permitAll()
+        http.formLogin().loginPage("/login").permitAll().failureHandler(customAuthFailureHandler)
                 .and()
                 .requestMatchers().antMatchers("/login/**", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/oauth2/**")
                 .and()
