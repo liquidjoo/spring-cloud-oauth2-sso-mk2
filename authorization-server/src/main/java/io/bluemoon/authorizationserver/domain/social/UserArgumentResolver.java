@@ -197,6 +197,4 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         }
 
     }
-
-
 }
