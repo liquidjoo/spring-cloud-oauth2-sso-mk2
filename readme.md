@@ -52,10 +52,12 @@ Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 �
 
 
 ## Ref
+```
 https://github.com/kakawait/uaa-behind-zuul-sample
 https://github.com/keets2012/microservice-integration
 https://github.com/artemMartynenko/spring-cloud-gateway-oauth2-sso-sample-application
 https://github.com/Baeldung/oauth-microservices
+```
 
 SSO
 
