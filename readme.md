@@ -29,7 +29,7 @@
 
 ## 인증 네트워크
 Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 및 인가 네트워크
-![Image of before_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/request_auth_networkt.png)
+![Image of before_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/request_auth_network.png)
 
 로그인이 성공했을 때
 ![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/after_login_network.png)
