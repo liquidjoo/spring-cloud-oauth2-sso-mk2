@@ -16,7 +16,10 @@
 ### 설명
 스프링 클라우드를 사용해서 만든 OAuth2 SSO 시스템 개발. 
 
-### 시스템 구성도
+### 환경
+- java 8
+- Spring boot 2.1.5
+- Gradle
 
 
 ### 목표
@@ -27,6 +30,12 @@
 또 많은 예가 있었지만 AuthorizationServerConfigurerAdapter 의 config 설정이 in-memory로 되어 있어서 여러 유저가 존재할 때
 mysql 기준으로 데이터베이스를 통해 인증을 할 수 있게 만들었습니다.
 
+### 인증 네트워크
+Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 및 인가 네트워크
+![Image of before_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/request_auth_network.png)
+
+로그인이 성공했을 때
+![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/after_login_network.png)
 
 ### SSO Login Flow
 
@@ -34,7 +43,7 @@ mysql 기준으로 데이터베이스를 통해 인증을 할 수 있게 만들�
 ### Zuul
 
 
-### Authorization Server
+### Authorization Server (User Account and Authentication Service -> UAA)
 
 
 ### Keys Points of Sample
@@ -43,12 +52,14 @@ mysql 기준으로 데이터베이스를 통해 인증을 할 수 있게 만들�
 ### 후기
 서비스 디스커버리 (유레카)를 사용하지 않아서 조금의 차이가 있습니다... 서비스 디스커버리를 사용하게되면
 개발 리소스(유지 및 보수) 가 추가되어서 빼고 Zuul에서 URL을 통해 라우트를 처리했습니다.
-많은분들의 문서 및 레포지토리를 참고하여 만들었습니다. 가장 많은 도움이 되었던 레포지토리 (https://github.com/kakawait/uaa-behind-zuul-sample)
+많은분들의 문서 및 레포지토리를 참고하여 만들었습니다.
 
 
 ### Ref
-
-
+https://github.com/kakawait/uaa-behind-zuul-sample
+https://github.com/keets2012/microservice-integration
+https://github.com/artemMartynenko/spring-cloud-gateway-oauth2-sso-sample-application
+https://github.com/Baeldung/oauth-microservices
 
 SSO
 
