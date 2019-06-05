@@ -32,10 +32,10 @@ mysql 기준으로 데이터베이스를 통해 인증을 할 수 있게 만들�
 
 ### 인증 네트워크
 Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 및 인가 네트워크
-![Image of before_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/request_auth_network.png)
+![Image of before_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/after_login_network.png)
 
 로그인이 성공했을 때
-![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/after_login_network.png)
+![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/after_login_network.png)
 
 ### SSO Login Flow
 
