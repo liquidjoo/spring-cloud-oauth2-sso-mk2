@@ -35,8 +35,8 @@ Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 �
 ![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/after_login_network.png)
 
 ## SSO Login Flow
-
-
+![Image of flow](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/zuul_flow.png)
+```ref) https://github.com/kakawait/uaa-behind-zuul-sample ```
 ## Zuul
 
 
@@ -76,3 +76,45 @@ WebSecurityConfigurerAdapter
 
 
 Authorization Server
+
+
+
+"67",
+"100",
+"113",
+"118",
+"170",
+"224",
+"226",
+"439",
+"448",
+"451",
+"498",
+"506",
+"507",
+"511",
+"568",
+"618",
+"699",
+"705",
+"748",
+"772",
+"799",
+"883",
+"1086",
+"1100",
+"1617",
+"1636",
+"2023",
+"2256",
+"2259",
+"2269",
+"2318",
+"2320",
+"2490",
+"2531",
+"2533",
+"2604",
+"2609",
+"2612",
+"2618",
