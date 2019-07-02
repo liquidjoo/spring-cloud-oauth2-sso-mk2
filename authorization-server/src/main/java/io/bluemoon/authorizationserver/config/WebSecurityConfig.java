@@ -23,7 +23,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @Configuration
 //@EnableOAuth2Client
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
-@Order(-1)
+//@Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -52,43 +52,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CharacterEncodingFilter filter = new CharacterEncodingFilter();
-//        http
-//            .formLogin().loginPage("/login").permitAll()
-//            .and()
-//            .authorizeRequests()
-//                .antMatchers("/", "/login/**", "/css/**", "/images/**", "/js/**", "/oauth/authorize", "/oauth/confirm_access",
-//                        "/console/**", "/oauth2/**").permitAll()
-//                .anyRequest().authenticated();
-//            .and()
-//                .oauth2Login();
-//                .loginPage("/login").permitAll()
-////                .defaultSuccessUrl("http://localhost:8765/login")
-//                .failureUrl("/loginFailure")
+//        http.formLogin();
+//http://localhost:8081/mk-auth/oauth/authorize?response_type=code&client_id=system1&redirect_uri=http://localhost:8081/mk-auth/code&scope=read
+//        curl -u system1:1234 http://localhost:8081/mk-auth/oauth/token -d "grant_type=password&username=user1&password=1234"
+// curl -u system1:1234 http://localhost:8081/mk-auth/oauth/token -d "grant_type=refresh_token&scope=read&refresh_token=131e73e1-0806-4f26-a84c-6d06eeecfd5d"
 
-//            .and()
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-//
-//            .and()
-//                .logout()
-//                .logoutUrl("/logout")
-//                .deleteCookies("JSESSSIONID")
-//                .invalidateHttpSession(true)
-//            .and()
-//                .addFilterBefore(filter, CsrfFilter.class);
-//                .csrf().disable();
-        http.formLogin().loginPage("/login").permitAll().failureHandler(customAuthFailureHandler)
-                .and()
-                .requestMatchers().antMatchers("/login/**", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/oauth2/**")
-                .and()
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .headers().frameOptions().disable()
-                .and()
-                .oauth2Login()
-//                .loginPage("/login").defaultSuccessUrl("/mk-auth/login/success").permitAll();
-                .loginPage("/login").permitAll().defaultSuccessUrl("/login/success", true).failureHandler(customAuthFailureHandler);
+
+
+
+
+
+//        --------------------------------- sso test
+//        http.formLogin().loginPage("/login").permitAll().failureHandler(customAuthFailureHandler)
+//                .and()
+//                .requestMatchers().antMatchers("/login/**", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/oauth2/**")
+//                .and()
+//                .authorizeRequests().anyRequest().authenticated()
+//                .and()
+//                .headers().frameOptions().disable()
+//                .and()
+//                .oauth2Login()
+//                .loginPage("/login").permitAll().defaultSuccessUrl("/login/success", true).failureHandler(customAuthFailureHandler);
 //                .and()
 //                .addFilterBefore(filter, CsrfFilter.class);
 

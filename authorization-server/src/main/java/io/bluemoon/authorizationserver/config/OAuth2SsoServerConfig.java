@@ -90,11 +90,14 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
                 .authenticationManager(authenticationManager)
                 // jdbc token processing
                 .tokenStore(jdbcTokenStore(dataSource))
-                // refresh token
+
                 // 사용자 세부 정보가 필요할 때
                 .userDetailsService(customUserDetailsService)
                 // approval store
                 .approvalStore(approvalStore)
+                // refresh token
+                .reuseRefreshTokens(true)
+
                 // 인증 코드 부여에 대한 인증 코드 서비스
                 .authorizationCodeServices(authorizationCodeServices);
 

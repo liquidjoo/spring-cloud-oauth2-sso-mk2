@@ -94,6 +94,13 @@ public class SsoController {
         return "kkk";
     }
 
+    @RequestMapping(value = "/code")
+    public String test(
+            @RequestParam(value = "code") String code
+    ) {
+        return code;
+    }
+
 
 
 
