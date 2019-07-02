@@ -76,3 +76,5 @@ WebSecurityConfigurerAdapter
 
 
 Authorization Server
+
+https://github.com/gilbutITbook/006962/blob/master/spmia-chapter7/zuulsvr/src/main/java/com/thoughtmechanix/zuulsvr/filters/AuthenticationFilter.java
