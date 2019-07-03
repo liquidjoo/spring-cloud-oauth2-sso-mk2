@@ -1,4 +1,6 @@
 rootProject.name = 'project-mark'
 include 'eureka-server'
 include 'contents'
-include 'queue'
+include 'zuul-oauth2'
+include 'authorization-server'
+include 'test-service'
