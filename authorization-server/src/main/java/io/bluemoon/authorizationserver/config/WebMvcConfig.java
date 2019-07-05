@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-//@EnableWebSecurity
+@EnableWebSecurity
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired

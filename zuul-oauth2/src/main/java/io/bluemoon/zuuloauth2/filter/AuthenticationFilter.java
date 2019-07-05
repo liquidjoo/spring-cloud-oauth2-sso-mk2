@@ -50,6 +50,7 @@ public class AuthenticationFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
+        log.debug("what???{}", ctx);
         return null;
     }
 }

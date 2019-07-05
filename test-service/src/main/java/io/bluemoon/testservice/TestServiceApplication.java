@@ -17,32 +17,33 @@ import java.security.Principal;
 @EnableResourceServer
 public class TestServiceApplication {
 
+
     public static void main(String[] args) {
         SpringApplication.run(TestServiceApplication.class, args);
     }
 
-    @Controller
-    @RequestMapping("/")
-    public static class TestController{
-
-        @RequestMapping(method = RequestMethod.GET)
-        @ResponseBody
-        public String helloMk2(Principal principal) {
-            return principal == null ? "hello anonymous" : "heelo" + principal.getName();
-        }
-
-        @PreAuthorize("#oauth2.hasScope('read') and hasRole('ROLE_USER')")
-        @RequestMapping(value = "secret", method = RequestMethod.GET)
-        @ResponseBody
-        public String helloMk2Secret(Principal principal) {
-            return principal == null ? "hello anonymous" : "heelo" + principal.getName();
-        }
-
-        @RequestMapping(method = RequestMethod.GET, value = "test")
-        @ResponseBody
-        public String test() {
-            return "test";
-        }
-    }
+//    @Controller
+//    @RequestMapping("/")
+//    public static class TestController{
+//
+//        @RequestMapping(method = RequestMethod.GET)
+//        @ResponseBody
+//        public String helloMk2(Principal principal) {
+//            return principal == null ? "hello anonymous" : "heelo" + principal.getName();
+//        }
+//
+//        @PreAuthorize("#oauth2.hasScope('read') and hasRole('ROLE_USER')")
+//        @RequestMapping(value = "secret", method = RequestMethod.GET)
+//        @ResponseBody
+//        public String helloMk2Secret(Principal principal) {
+//            return principal == null ? "hello anonymous" : "heelo" + principal.getName();
+//        }
+//
+//        @RequestMapping(method = RequestMethod.GET, value = "test")
+//        @ResponseBody
+//        public String test() {
+//            return "test";
+//        }
+//    }
 
 }
