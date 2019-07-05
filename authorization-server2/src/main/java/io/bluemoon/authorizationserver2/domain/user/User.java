@@ -1,6 +1,5 @@
 package io.bluemoon.authorizationserver2.domain.user;
 
-import io.bluemoon.authorizationserver.domain.social.SocialType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,10 +31,6 @@ public class User {
     @Column
     private String principal;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private SocialType socialType;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<UserRole> userRole;
 
@@ -56,7 +51,7 @@ public class User {
 //    private Date regDate = new Date();
 
     @Builder
-    public User(String username, String name, String password, String email, String principal, LocalDateTime createdAt, LocalDateTime updatedAt, SocialType socialType) {
+    public User(String username, String name, String password, String email, String principal, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.username = username;
         this.name = name;
         this.password = password;
@@ -64,6 +59,5 @@ public class User {
         this.principal = principal;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.socialType = socialType;
     }
 }
