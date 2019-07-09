@@ -13,7 +13,16 @@ public class UserEventListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = UserServiceImpl.UserCreateEvent.class)
-    public void handle(UserServiceImpl.UserCreateEvent event) throws IOException {
+    public void createUserHandle(UserServiceImpl.UserCreateEvent event) throws IOException {
+        User user = event.getUser();
+
+
+        // oauth
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = UserServiceImpl.UserUpdateEvent.class)
+    public void updateUserHandle(UserServiceImpl.UserUpdateEvent event) throws IOException {
         User user = event.getUser();
 
         // oauth
