@@ -1,4 +1,4 @@
-package io.bluemoon.authorizationserver.config.handler;
+package io.bluemoon.testservice.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

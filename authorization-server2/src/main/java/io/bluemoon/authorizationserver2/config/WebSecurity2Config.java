@@ -1,8 +1,9 @@
 package io.bluemoon.authorizationserver2.config;
-
 import io.bluemoon.authorizationserver2.service.user.CustomUserDetailsServiceImpl;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
+@Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsServiceImpl customUserDetailsService;
 
@@ -33,7 +35,7 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+
     }
 
     @Bean
