@@ -39,7 +39,7 @@ public class APIRequest {
 
         @Override
         public ResponseWrapper createOAuthUser(User user) throws IOException {
-            String url = "";
+            String url = "http://localhost:8081/auth/createOAuthUser";
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String jsonString = gson.toJson(user);
 
@@ -55,7 +55,7 @@ public class APIRequest {
             Response response = call.execute();
             ResponseWrapper result = new ResponseWrapper(response.body().string(), convertToString(response.headers()));
 
-            return null;
+            return result;
         }
 
         @Override

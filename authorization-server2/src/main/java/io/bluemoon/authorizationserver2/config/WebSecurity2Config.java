@@ -8,13 +8,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
+@EnableWebSecurity
+//@Order(SecurityProperties.BASIC_AUTH_ORDER -1)
+//@Order(-1)
 public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsServiceImpl customUserDetailsService;
+//    private PasswordEncoder passwordEncoder;
 
     public WebSecurity2Config(
             CustomUserDetailsServiceImpl customUserDetailsService
@@ -33,8 +42,18 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+    // allow controller uri
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http
+//                .requestMatchers().antMatchers("/createOAuthUser")
+//                .and()
+                .authorizeRequests()
+//                .antMatchers("/createOAuthUser").permitAll()
+                .anyRequest()
+                .authenticated();
 
     }
 
@@ -47,6 +66,12 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     }
 
     // 패스워드 인코딩 수정
+//    @Bean
+//    public static PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
+
     @Bean
     @SuppressWarnings("deprecation")
     public static NoOpPasswordEncoder passwordEncoder() {

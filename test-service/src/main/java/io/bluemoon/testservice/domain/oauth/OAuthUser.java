@@ -1,7 +1,6 @@
 package io.bluemoon.testservice.domain.oauth;
 
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
 public class OAuthUser {

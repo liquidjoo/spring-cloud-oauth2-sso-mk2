@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import java.security.Principal;
 
 @SpringBootApplication
-@EnableResourceServer
 public class TestServiceApplication {
 
 
