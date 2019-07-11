@@ -2,12 +2,16 @@ package io.bluemoon.authorizationserver2.controller;
 
 import io.bluemoon.authorizationserver2.domain.user.User;
 import io.bluemoon.authorizationserver2.service.user.UserService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
 
@@ -34,7 +38,12 @@ public class AuthController {
         System.out.println(user);
         System.out.println(header);
 
-        return user;
+        return userService.createOAuthUser(user);
+    }
+
+    @RequestMapping(value = "/createToken", method = RequestMethod.POST)
+    public String createToken(@RequestBody User user, @RequestHeader Map header) throws IOException {
+        return userService.createOAuthToken(user);
     }
 
     @PutMapping(value = "/updateOAuthUser")
@@ -44,5 +53,7 @@ public class AuthController {
 
         return user;
     }
+
+
 
 }

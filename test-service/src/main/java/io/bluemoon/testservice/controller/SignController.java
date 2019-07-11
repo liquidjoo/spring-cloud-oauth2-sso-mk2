@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -21,13 +22,10 @@ public class SignController {
     }
 
     @PostMapping("/signInMiddleWare")
-    public String signInMiddleWare(HttpServletRequest request) {
-        System.out.println(request);
-        System.out.println(request.getAuthType());
-        System.out.println(request.getSession());
-        System.out.println(request.getParameterMap().toString());
+    public Map signInMiddleWare(HttpServletRequest request) throws IOException {
+        User user = requestToUser(request);
 
-        return "aaaa";
+        return userService.readUser(user);
     }
 
     @PostMapping("/signUpMiddleWare")

@@ -18,17 +18,18 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
-@EnableWebSecurity
-//@Order(SecurityProperties.BASIC_AUTH_ORDER -1)
-//@Order(-1)
 public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsServiceImpl customUserDetailsService;
+
+    private PasswordEncoder passwordEncoder;
 //    private PasswordEncoder passwordEncoder;
 
     public WebSecurity2Config(
-            CustomUserDetailsServiceImpl customUserDetailsService
+            CustomUserDetailsServiceImpl customUserDetailsService,
+            PasswordEncoder passwordEncoder
     ) {
         this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -42,26 +43,12 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
-    // allow controller uri
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-//                .requestMatchers().antMatchers("/createOAuthUser")
-//                .and()
-                .authorizeRequests()
-//                .antMatchers("/createOAuthUser").permitAll()
-                .anyRequest()
-                .authenticated();
-
-    }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         return daoAuthenticationProvider;
     }
 
@@ -71,10 +58,4 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
 //        return new BCryptPasswordEncoder();
 //    }
 
-
-    @Bean
-    @SuppressWarnings("deprecation")
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-    }
 }
