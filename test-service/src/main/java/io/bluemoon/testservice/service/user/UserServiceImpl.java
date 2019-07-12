@@ -1,7 +1,10 @@
 package io.bluemoon.testservice.service.user;
 
+import io.bluemoon.testservice.domain.oauth.OAuthUser;
+import io.bluemoon.testservice.domain.oauth.OAuthUserRepository;
 import io.bluemoon.testservice.domain.user.User;
 import io.bluemoon.testservice.domain.user.UserRepository;
+import io.bluemoon.testservice.service.oauth.OAuthUserService;
 import io.bluemoon.testservice.utils.APIRequest;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,11 +28,14 @@ public class UserServiceImpl implements UserService, ApplicationEventPublisherAw
 
     private UserRepository userRepository;
     private ApplicationEventPublisher eventPublisher;
+    private OAuthUserRepository oAuthUserRepository;
 
     public UserServiceImpl(
-            UserRepository userRepository
+            UserRepository userRepository,
+            OAuthUserRepository oAuthUserRepository
     ) {
         this.userRepository = userRepository;
+        this.oAuthUserRepository = oAuthUserRepository;
     }
 
 
@@ -39,6 +45,10 @@ public class UserServiceImpl implements UserService, ApplicationEventPublisherAw
         user.setPassword(passwordEncoder().encode(user.getPassword()));
         System.out.println(passwordEncoder().matches("1234", user.getPassword()));
         userRepository.save(user);
+//        OAuthUser o = new OAuthUser();
+//        o.setPassword("123");
+//        o.setName("tomz");
+//        oAuthUserRepository.save(o);
         eventPublisher.publishEvent(new UserCreateEvent(user));
         return user;
     }
@@ -54,10 +64,19 @@ public class UserServiceImpl implements UserService, ApplicationEventPublisherAw
         if (optionalUser.isPresent()) {
             System.out.println(optionalUser.get().toString());
             if (passwordEncoder().matches(user.getPassword(),optionalUser.get().getPassword())) {
-                APIRequest.ResponseWrapper response = APIRequest.getIRequestExecutor().createOAuthToken(user);
-                Map a = new HashMap();
-                a.put("data", response);
-                return a;
+
+                Optional<OAuthUser> optionalOAuthUser = oAuthUserRepository.findByUsername(user.getUsername());
+                if (passwordEncoder().matches(user.getPassword(), optionalOAuthUser.get().getPassword())) {
+                    // client id
+                    Map<String, Object> tokenInfo = new HashMap<>();
+                    tokenInfo.put("username", user.getUsername());
+                    tokenInfo.put("password", user.getPassword());
+                    tokenInfo.put("grant_type", "password");
+                    APIRequest.ResponseWrapper response = APIRequest.getIRequestExecutor().createOAuthToken(tokenInfo);
+                    System.out.println();
+
+                }
+
             }
 
         }

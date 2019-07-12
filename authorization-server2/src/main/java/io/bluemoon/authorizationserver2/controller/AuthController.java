@@ -1,30 +1,25 @@
 package io.bluemoon.authorizationserver2.controller;
 
-import io.bluemoon.authorizationserver2.domain.user.User;
-import io.bluemoon.authorizationserver2.service.user.UserService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.Errors;
+import io.bluemoon.authorizationserver2.domain.client.OAuthClientDetails;
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUser;
+import io.bluemoon.authorizationserver2.service.user.OAuthUserService;
+import io.bluemoon.authorizationserver2.utils.APIRequest;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Map;
 
 @RestController
 public class AuthController {
-    private UserService userService;
+
+    private OAuthUserService oAuthUserService;
 
     public AuthController(
-            UserService userService
+            OAuthUserService oAuthUserService
     ) {
-        this.userService = userService;
+        this.oAuthUserService = oAuthUserService;
     }
-
 
     @RequestMapping(value = "/user")
     public Principal getUser(Principal user) {
@@ -32,27 +27,38 @@ public class AuthController {
     }
 
 
-    @RequestMapping(value = "/createOAuthUser", method = RequestMethod.POST)
-    public User createOAuthUser(@RequestBody @NotNull User user, @RequestHeader Map header, Errors errors) {
-        System.out.println(errors.toString());
-        System.out.println(user);
-        System.out.println(header);
+    @PostMapping("/signInMiddleWare")
+    public String signInMiddleWare(HttpServletRequest request) throws IOException {
+        OAuthUser user = requestToUser(request);
 
-        return userService.createOAuthUser(user);
+        return oAuthUserService.readUser(user);
     }
 
-    @RequestMapping(value = "/createToken", method = RequestMethod.POST)
-    public String createToken(@RequestBody User user, @RequestHeader Map header) throws IOException {
-        return userService.createOAuthToken(user);
+    @PostMapping("/signUpMiddleWare")
+    public OAuthUser signUpMiddleWare(HttpServletRequest request) {
+
+        OAuthUser user = requestToUser(request);
+
+        return oAuthUserService.createUser(user);
+
     }
 
-    @PutMapping(value = "/updateOAuthUser")
-    public User updateOAuthUser(@RequestBody User user, @RequestHeader Map header) {
-        System.out.println(user);
-        System.out.println(header);
+    @PostMapping("/projectCreateMiddleWare")
+    public OAuthClientDetails proejctCreateMiddleWare(HttpServletRequest request) {
+        OAuthClientDetails authClientDetails = new OAuthClientDetails();
+        authClientDetails.setClientId(request.getParameter("client_id"));
+        authClientDetails.setClientSecret(request.getParameter("client_secret"));
+        return oAuthUserService.createProject(authClientDetails);
 
+    }
+
+    private OAuthUser requestToUser(HttpServletRequest request) {
+        OAuthUser user = new OAuthUser();
+        user.setUsername(request.getParameter("username"));
+        user.setPassword(request.getParameter("password"));
         return user;
     }
+
 
 
 

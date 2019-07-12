@@ -19,7 +19,7 @@ public class APIRequest {
     }
 
     public interface IRequestExecutor {
-        ResponseWrapper createOAuthToken(Map tokenInfo) throws IOException;
+        ResponseWrapper createOAuthToken(Map userInfo, Map authInfo) throws IOException;
 
     }
 
@@ -32,18 +32,22 @@ public class APIRequest {
             init();
         }
 
-
         @Override
-        public ResponseWrapper createOAuthToken(Map tokenInfo) throws IOException {
+        public ResponseWrapper createOAuthToken(Map userInfo, Map authInfo) throws IOException {
             String url = "http://localhost:8081/auth/oauth/token";
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String jsonString = gson.toJson(tokenInfo);
-            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonString);
+            RequestBody formBody = new FormBody.Builder()
+                    .add("grant_type", userInfo.get("grant_type").toString())
+                    .add("username", userInfo.get("username").toString())
+                    .add("password", userInfo.get("password").toString())
+                    .build();
+//            String jsonString = gson.toJson(userInfo);
+//            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonString);
             Request request = new Request.Builder()
                     .url(url)
-                    .addHeader("Authorization", Credentials.basic("a","1"))
-                    .post(body)
-                    .header("Content-type", "application/json")
+                    .addHeader("Authorization", Credentials.basic(authInfo.get("client_id").toString(),authInfo.get("client_secret").toString()))
+                    .post(formBody)
+//                    .header("Content-type", "application/json")
                     .build();
 
             Call call = client.newCall(request);
@@ -51,8 +55,8 @@ public class APIRequest {
             ResponseWrapper result = new ResponseWrapper(response.body().string(), convertToString(response.headers()));
             System.out.println("----------===================------------");
             System.out.println(result.getBody());
-            return result;
 
+            return result;
         }
     }
 

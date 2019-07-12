@@ -1,5 +1,9 @@
 package io.bluemoon.authorizationserver2.service.user;
 
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUser;
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUserRepository;
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUserRole;
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUserRoleRepository;
 import io.bluemoon.authorizationserver2.domain.user.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,42 +12,44 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     // User Info
-    private UserRepository userRepository;
-    private UserRoleRepository userRoleRepository;
+    private OAuthUserRepository oAuthUserRepository;
+    private OAuthUserRoleRepository oAuthUserRoleRepository;
 
     public CustomUserDetailsServiceImpl(
-            UserRepository userRepository,
-            UserRoleRepository userRoleRepository
+            OAuthUserRepository oAuthUserRepository,
+            OAuthUserRoleRepository oAuthUserRoleRepository
     ) {
-        this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
+        this.oAuthUserRepository = oAuthUserRepository;
+        this.oAuthUserRoleRepository = oAuthUserRoleRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("why?????????????"+username);
-        User user = userRepository.findByUsername(username).get();
-        System.out.println(user);
-        List<UserRole> userRole = userRoleRepository.findByUser(user);
-        System.out.println(userRole);
-        System.out.println("---------------------------");
-        List<String> urs = new ArrayList<>();
-        for (UserRole ur : userRole) {
-            urs.add(ur.getRole());
-        }
+        Optional<OAuthUser> user = oAuthUserRepository.findByUsername(username);
+        if (user.isPresent()) {
+            System.out.println(user);
+            List<OAuthUserRole> userRoles = oAuthUserRoleRepository.findByOAuthUser(user.get());
+            System.out.println(userRoles);
+            System.out.println("---------------------------");
+            List<String> urs = new ArrayList<>();
+            for (OAuthUserRole ur : userRoles) {
+                urs.add(ur.getRole());
+            }
 
-        if (user == null) {
+            CustomUserDetails userDetail = new CustomUserDetails(user.get(), urs);
+            return userDetail;
+
+        } else {
             throw new UsernameNotFoundException("UsernameNotFound[" + username + "]");
         }
 
-        CustomUserDetails userDetail = new CustomUserDetails(user, urs);
-        System.out.println(userDetail);
-        return userDetail;
     }
 
     /**

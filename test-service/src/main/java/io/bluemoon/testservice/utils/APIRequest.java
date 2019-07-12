@@ -20,8 +20,7 @@ public class APIRequest {
     }
 
     public interface IRequestExecutor {
-        ResponseWrapper createOAuthUser(User user) throws IOException;
-        ResponseWrapper createOAuthToken(User user) throws IOException;
+        ResponseWrapper createOAuthToken(Map tokenInfo) throws IOException;
         ResponseWrapper updateOAuthUser(User user);
 
         ResponseWrapper createOAuthClientDetails();
@@ -38,16 +37,16 @@ public class APIRequest {
         }
 
 
+
         @Override
-        public ResponseWrapper createOAuthUser(User user) throws IOException {
-            String url = "http://localhost:8081/auth/createOAuthUser";
+        public ResponseWrapper createOAuthToken(Map tokenInfo) throws IOException {
+            String url = "http://localhost:8081/auth/oauth/token";
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String jsonString = gson.toJson(user);
-
+            String jsonString = gson.toJson(tokenInfo);
             RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonString);
-
             Request request = new Request.Builder()
                     .url(url)
+                    .addHeader("Authorization", Credentials.basic("a","1"))
                     .post(body)
                     .header("Content-type", "application/json")
                     .build();
@@ -55,27 +54,8 @@ public class APIRequest {
             Call call = client.newCall(request);
             Response response = call.execute();
             ResponseWrapper result = new ResponseWrapper(response.body().string(), convertToString(response.headers()));
-
-            return result;
-        }
-
-        @Override
-        public ResponseWrapper createOAuthToken(User user) throws IOException {
-            String url = "http://localhost:8081/auth/auth";
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String jsonString = gson.toJson(user);
-
-            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonString);
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .header("Content-type", "application/json")
-                    .build();
-
-            Call call = client.newCall(request);
-            Response response = call.execute();
-            ResponseWrapper result = new ResponseWrapper(response.body().string(), convertToString(response.headers()));
+            System.out.println("----------===================------------");
+            System.out.println(result.getBody());
 
             return result;
         }

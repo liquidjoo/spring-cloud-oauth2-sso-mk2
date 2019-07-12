@@ -1,4 +1,4 @@
-package io.bluemoon.testservice.domain.oauth;
+package io.bluemoon.authorizationserver2.domain.oauth;
 
 import lombok.Data;
 import lombok.ToString;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @ToString(exclude = "oAuthUser")
-@Table(name = "oauth_user_role", schema = "oauth2")
+@Table(name = "oauth_user_role")
 public class OAuthUserRole {
 
     @Id
@@ -20,7 +20,7 @@ public class OAuthUserRole {
     private String role;
 
     @Column
-    private String projectId;
+    private String resourceIds;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "userId")

@@ -1,4 +1,4 @@
-package io.bluemoon.testservice.domain.oauth;
+package io.bluemoon.authorizationserver2.domain.oauth;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Data
 @Entity
-@Table(name = "oauth_user", schema = "oauth2")
+@Table(name = "oauth_user")
 public class OAuthUser {
 
     @Id
@@ -25,10 +25,10 @@ public class OAuthUser {
     private String name;
 
     @Column
-    private String email;
+    private String status;
 
     @Column
-    private String ResourceId;
+    private String reSellerId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "oAuthUser", fetch = FetchType.EAGER)
     private Collection<OAuthUserRole> userRole;

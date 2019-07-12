@@ -1,5 +1,6 @@
 package io.bluemoon.authorizationserver2.domain.user;
 
+import io.bluemoon.authorizationserver2.domain.oauth.OAuthUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,16 +14,16 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private static final long serialVersionUID = 6396079419309274853L;
-    private Long id;
+    private Integer id;
     private String username;
     private String password;
     private List<String> userRole;
 
-    public CustomUserDetails(User user, List<String> userRole) {
+    public CustomUserDetails(OAuthUser user, List<String> userRoles) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.userRole = userRole;
+        this.userRole = userRoles;
     }
 
     @Override

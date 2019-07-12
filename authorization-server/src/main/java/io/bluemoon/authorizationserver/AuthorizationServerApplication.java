@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import java.util.Date;
 
 @SpringBootApplication
-@EnableResourceServer
+//@EnableResourceServer
 public class AuthorizationServerApplication {
 
     public static void main(String[] args) {
