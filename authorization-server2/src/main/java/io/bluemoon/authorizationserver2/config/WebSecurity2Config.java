@@ -16,7 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
+@Order(-1)
 public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsServiceImpl customUserDetailsService;
 
@@ -40,13 +41,17 @@ public class WebSecurity2Config extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/oauth/token").permitAll()
-                .anyRequest().authenticated()
+                .csrf().disable().cors().disable()
+                .requestMatchers()
+                .antMatchers("/css/**", "/script/**", "image/**", "/fonts/**", "lib/**")
+
                 .and()
                 .headers().frameOptions().disable()
                 .and()
-                .exceptionHandling();
+                .authorizeRequests()
+                .antMatchers("/css/**", "/script/**", "image/**", "/fonts/**", "lib/**").permitAll()
+                .anyRequest()
+                .authenticated();
     }
 
     @Bean
