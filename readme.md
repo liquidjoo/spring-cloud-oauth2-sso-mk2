@@ -1,20 +1,14 @@
 
-# (작성중)
 # Zuul 과 Authorization Server를 통해 SSO 개발 (소셜 로그인 추가)
-- 시스템 구성도
-- 어떠한 기능들이 쓰였나 (os, 기술, dependency, etc..)
-- 디테일한 설명
-- 고칠곳..?
-- 참고 자료들
-
 - overview
 - usage
 - gradle
 - Goals
 - keys points of sample
 
-## 설명
-스프링 클라우드를 사용해서 만든 OAuth2 SSO 시스템 개발. 
+## 설명 *() 괄호 안의 내용은 프로젝트 이름*
+- 스프링 클라우드를 사용해서 만든 OAuth2 SSO 시스템 개발. *(gateway-zuul, Authorization-server)*
+- 스프링 클라우들 사용해서 만들 OAuth 2.0 시스템 *(zuul-oauth2, Authorization-server2)*
 
 ## 환경
 - java 8
@@ -35,14 +29,41 @@ Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 �
 ![Image of after_auth](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/after_login_network.png)
 
 ## SSO Login Flow
-![Image of flow](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/zuul_flow.png)
-```ref) https://github.com/kakawait/uaa-behind-zuul-sample ```
-## Zuul
+![Image of flow](https://github.com/liquidjoo/spring-cloud-oauth2-sso-mk2/blob/master/zuul_flow.png)  
+```ref) https://github.com/kakawait/uaa-behind-zuul-sample ```  
 
+## Zuul
+**gateway-zuul(SSO Gateway)**
+security 내의 **security.oauth2.sso.login-path=/login** 프로퍼티 설정과 zuul의 게이트웨이 특성을 이용해 sso로 구현이 가능.
+zuul이 zuul proxy server, resource server 역할을 수행.
+**ResourceServerConfigurer**를 사용해도 되지만 설정 도중 Order 때문인지 계속 필터를 못걸어서    
+securityContextHolder에 Authentication 즉, 인증 데이터를 가져오지 못하는 이슈가 있어서 **WebSecurityConfigurerAdapter** 사용.. Order(0)으로 줘버림 <- ResourceServerConfigurer은 Order(3)을 갖는다.  
+```java
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
+                .and()
+                .logout().permitAll()
+                .logoutSuccessUrl("/");
+    }
+```
+antMatchers에 접근하고자 하는 uri 접근제어.
+
+**주요 properties 설정**
+```
+security.oauth2.sso.login-path=/login
+security.oauth2.client.access-token-uri=http://localhost:8081/mk-auth/oauth/token
+# /oauth/authorize 요청은 클라이언트가 리소스 서버의 api를 사용하기 위해 사용자(리소스 소유자)에게
+# 권한 위임 동의를 받기 위한 페이지를 출력하는 기능을 수행
+security.oauth2.client.user-authorization-uri=http://localhost:8081/mk-auth/oauth/authorize
+security.oauth2.resource.user-info-uri=http://localhost:8081/mk-auth/user
+```  
+sso.login-path를 통해 인증서버와 통신 후 user-info-uri를 통해 인증이 데이터가 정상적으로 나오면 security, zuul.routes를 통해 sso처럼 접근이 가능.
 
 ## Authorization Server (User Account and Authentication Service -> UAA)
 
-권한 코드 방식(Authorization Code flow) [current project name = authorization-server]
+**권한 코드 방식(Authorization Code flow)** *[current project name = authorization-server]*    
 클라이언트가 다른 사용자 대신 특정 리소스에 접근을 요청할 때 사용되어짐.  
 리소스 접근을 위한 id, password, code(auth server)를 사용해서 리소스에 대한 엑세스 토큰 발급.  
 현재 SSO Login 시에 사용된 인증 방식으로 구현.  
@@ -62,12 +83,16 @@ curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=auth
 * 문제점 sso login form이 있는데 curl 을 통해 토큰을 발급하게 되면 로그인 페이지로 계속 리다이렉트 되어서 인증 토큰이 정상적으로 발급이 잘 안됨..(실력 부족 ㅜ)
 
 
-리소스 소유자 암호 자격 증명 타입(Resource Owner Password Credentials Grant Type) [current project name = authorization-server2]
-리소스 접근 시에 id, password, client-id, client-secret 사용해서 리소스에 대한 엑세스 토큰 발급
+**리소스 소유자 암호 자격 증명 타입(Resource Owner Password Credentials Grant Type)** *[current project name = authorization-server2]*  
+리소스 접근 시에 id, password, client-id, client-secret 사용해서 리소스에 대한 엑세스 토큰, 리프레쉬 토큰 발급
 ```
 curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=password&username=blue&password=moon"
 ```
 
+리프레쉬 토큰도 같이 발급되며 리프레쉬 토큰이 만료 되기 전까진 토큰을 생성하는게 아니라 리프레쉬 토큰으로 액세스 토큰을 갱신 (2ddb0b27-a62a-4719-b0c4-c8b23ab537bd <- 발급 받은 토큰)
+```
+curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=refresh_token&scope=read&refresh_token=2ddb0b27-a62a-4719-b0c4-c8b23ab537bd"
+```
 
 
 ## 토큰 발급 후
@@ -87,7 +112,6 @@ curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=pass
 
 ## Keys Points of Sample
 
-
 ## 후기
 서비스 디스커버리 (유레카)를 사용하지 않아서 조금의 차이가 있습니다... 서비스 디스커버리를 사용하게되면 개발 리소스(유지 및 보수) 가 추가되어서 빼고 Zuul에서 URL을 통해 라우트를 처리했습니다.  
 많은분들의 문서 및 레포지토리를 참고하여 만들었습니다.
@@ -101,23 +125,3 @@ https://github.com/artemMartynenko/spring-cloud-gateway-oauth2-sso-sample-applic
 https://github.com/Baeldung/oauth-microservices
 https://cheese10yun.github.io/oauth2
 ```
-
-SSO
-
-Zuul gateway
-- sso Login path 
-    - application.properties (security.oauth2.sso.login-path = /login)
-    - 위의 sso login path 프로퍼티 설정은 Authorization Server 의 login page로 리다이렉트 해준다.
-    
-- filter
-    - csrf RequestMatcher
-
-@EnableOAuth2Sso
-@ResourceServer
-WebSecurityConfigurerAdapter
-- HttpSecurity http setting
-
-
-Authorization Server
-
-https://github.com/gilbutITbook/006962/blob/master/spmia-chapter7/zuulsvr/src/main/java/com/thoughtmechanix/zuulsvr/filters/AuthenticationFilter.java
