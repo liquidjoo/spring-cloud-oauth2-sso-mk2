@@ -116,6 +116,11 @@ curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=refr
 서비스 디스커버리 (유레카)를 사용하지 않아서 조금의 차이가 있습니다... 서비스 디스커버리를 사용하게되면 개발 리소스(유지 및 보수) 가 추가되어서 빼고 Zuul에서 URL을 통해 라우트를 처리했습니다.  
 많은분들의 문서 및 레포지토리를 참고하여 만들었습니다.
 
+## 새로운 작업
+DDD 적용예정
+적용 예정 project [authorization server, authorization server2, test-service]
+
+할 수 있는 부분은 자바8 사용 예정
 
 ## Ref
 ```
