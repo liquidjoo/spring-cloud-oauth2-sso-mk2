@@ -109,6 +109,22 @@ curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=refr
  2. 회원 관리 스토리지에 Refresh Token은 따로 저장 후 Access Token만 헤더에 실어서 요청을 보냄.  
  3. Validation Access Token (check_token uri 이용)
  4. 각자의 로직이 들어감 예) Access Token이 만료 되었으면 갱신을 할 것인 가 또는 다시 로그인을 시킬 것인가 등의 작업이 필요.
+ 
+ 
+ ## zuul dynamic routing
+ 개발 하면서 zuul에서 라우팅할 때 포워딩, 라우팅 되어 있는 서비스들의 헬스 체크 같은걸 함.  
+ 라우팅 되어 있는 서비스가 끊겼을 때 zuul에서는 커넥션 에러와 포워딩 익셉션을 던지며, 서비스가 켜져 있더라고 하더라도  
+ 이미 끊겼다면 동적 라우팅 처리를 해줘야한다.    
+ ```bash
+com.netflix.zuul.exception.ZuulException: Forwarding error
+at org.springframework.cloud.netflix.zuul.filters.route.SimpleHostRoutingFilter.handleException(SimpleHostRoutingFilter.java:257) ~[spring-cloud-netflix-zuul-2.1.1.RELEASE.jar!/:2.1.1.RELEASE]
+at org.springframework.cloud.netflix.zuul.filters.route.SimpleHostRoutingFilter.run(SimpleHostRoutingFilter.java:237) ~[spring-cloud-netflix-zuul-2.1.1.RELEASE.jar!/:2.1.1.RELEASE]
+...
+
+connection refuse ~
+```
+
+동적라우팅 적용 예정
 
 ## Keys Points of Sample
 
