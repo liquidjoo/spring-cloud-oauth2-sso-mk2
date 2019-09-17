@@ -11,10 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -48,6 +45,21 @@ public class TestServiceApplication {
             return principal == null ? "hello anonymous" : "heelo" + principal.getName();
         }
 
+
+        @RequestMapping(method = RequestMethod.GET, value = "/tts")
+        @ResponseBody
+        public void helloMk3(Principal principal) {
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            SecurityContextHolder.clearContext();
+            System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            SecurityContextHolder securityContextHolder = (SecurityContextHolder) SecurityContextHolder.createEmptyContext();
+            System.out.println(securityContextHolder);
+
+        }
+
+
         @PreAuthorize("#oauth2.hasScope('read') and hasRole('ROLE_USER')")
         @RequestMapping(value = "secret", method = RequestMethod.GET)
         @ResponseBody
@@ -59,6 +71,14 @@ public class TestServiceApplication {
         @ResponseBody
         public String test() {
             return "test";
+        }
+    }
+
+    @RestController("/tests")
+    public static class TestController2 {
+        @RequestMapping(method = RequestMethod.DELETE)
+        public void test(@RequestParam String test) {
+            System.out.println(test);
         }
     }
 
