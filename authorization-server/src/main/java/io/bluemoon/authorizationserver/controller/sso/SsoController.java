@@ -2,12 +2,29 @@ package io.bluemoon.authorizationserver.controller.sso;
 
 import io.bluemoon.authorizationserver.config.annotation.SocialUser;
 import io.bluemoon.authorizationserver.domain.user.User;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 @Controller
 public class SsoController {
+
+    private AuthorizationServerTokenServices authorizationServerTokenServices;
+    private ConsumerTokenServices consumerTokenServices;
+
+    public SsoController(AuthorizationServerTokenServices authorizationServerTokenServices,
+                         ConsumerTokenServices consumerTokenServices) {
+        this.authorizationServerTokenServices = authorizationServerTokenServices;
+        this.consumerTokenServices = consumerTokenServices;
+    }
 
     @RequestMapping(value = "/user")
     @ResponseBody
@@ -21,6 +38,16 @@ public class SsoController {
         // zuul login page redirect
         return "redirect:https://localhost:8765/login";
 //        return "why not";
+    }
+
+
+    @PostMapping("/revokeToken")
+    public void revokeToken(HttpServletRequest request, HttpServletResponse response, Principal principal) {
+        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
+        OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(oAuth2Authentication);
+        consumerTokenServices.revokeToken(accessToken.getValue());
+        HttpSession httpSession = request.getSession();
+        httpSession.invalidate();
     }
 
 
