@@ -13,17 +13,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 //import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Configuration
-//@EnableOAuth2Client
-//@Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
+@EnableWebSecurity
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -57,11 +59,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        --------------------------------- sso test
         http.formLogin().loginPage("/login").permitAll().failureHandler(customAuthFailureHandler)
                 .and()
-                .requestMatchers().antMatchers("/login/**", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/oauth2/**")
+                .requestMatchers().antMatchers("/login/**","/oauth/authorize")
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable()
+                .and()
+                .logout().logoutSuccessUrl("/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout")).invalidateHttpSession(true).deleteCookies("JSESSIONID")
                 .and()
                 .oauth2Login()
                 .loginPage("/login").permitAll().defaultSuccessUrl("/login/success", true).failureHandler(customAuthFailureHandler);
@@ -93,10 +97,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
 
+//    @Bean
+//    @SuppressWarnings("deprecation")
+//    public static NoOpPasswordEncoder passwordEncoder() {
+//        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+//    }
+
     @Bean
-    @SuppressWarnings("deprecation")
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 
