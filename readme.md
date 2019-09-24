@@ -35,28 +35,32 @@ Zuul에 등록되어진 리소스 서비스에 접근하려고 할 때 인증 �
 ## Zuul
 **gateway-zuul(SSO Gateway)**
 security 내의 **security.oauth2.sso.login-path=/login** 프로퍼티 설정과 zuul의 게이트웨이 특성을 이용해 sso로 구현이 가능.
-zuul이 zuul proxy server, resource server 역할을 수행.
-**ResourceServerConfigurer**를 사용해도 되지만 설정 도중 Order 때문인지 계속 필터를 못걸어서    
-securityContextHolder에 Authentication 즉, 인증 데이터를 가져오지 못하는 이슈가 있어서 **WebSecurityConfigurerAdapter** 사용.. Order(0)으로 줘버림 <- ResourceServerConfigurer은 Order(3)을 갖는다.  
+zuul이 zuul proxy server, resource server 역할을 수행.  
+    
 ```java
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
-                .and()
-                .logout().permitAll()
-                .logoutSuccessUrl("/");
-    }
+        public void configure(HttpSecurity http) throws Exception {
+            http.authorizeRequests()
+                    .antMatchers("/", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
+                    .and()
+            .logout().logoutSuccessUrl("/gateway/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout")).invalidateHttpSession(true).deleteCookies("JSESSIONID").clearAuthentication(true);
+    
+        }
 ```
-antMatchers에 접근하고자 하는 uri 접근제어.
+antMatchers에 접근하고자 하는 uri 접근제어.  
+
+**logout**
+logout 요청시 (http://localhost:8765/logout) /gateway/logout을 통해 zuul 쿠키 및 세션을 삭제, token revoke 후  
+redirect를 통해 인증 서버에서도 쿠키 및 세션을 삭제  
+
 
 **주요 properties 설정**
 ```
 security.oauth2.sso.login-path=/login
-security.oauth2.client.access-token-uri=http://localhost:8081/mk-auth/oauth/token
+security.oauth2.client.access-token-uri=http://localhost:8765/mk-auth/oauth/token
 # /oauth/authorize 요청은 클라이언트가 리소스 서버의 api를 사용하기 위해 사용자(리소스 소유자)에게
 # 권한 위임 동의를 받기 위한 페이지를 출력하는 기능을 수행
-security.oauth2.client.user-authorization-uri=http://localhost:8081/mk-auth/oauth/authorize
+security.oauth2.client.user-authorization-uri=http://localhost:8765/mk-auth/oauth/authorize
 security.oauth2.resource.user-info-uri=http://localhost:8081/mk-auth/user
 ```  
 sso.login-path를 통해 인증서버와 통신 후 user-info-uri를 통해 인증이 데이터가 정상적으로 나오면 security, zuul.routes를 통해 sso처럼 접근이 가능.
@@ -102,7 +106,7 @@ curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=refr
  Spring Security Context Holder, Principal 객체를 통해 토큰에 대한 유저 정보를 받아 볼 수 있다. 
 - JWT 사용 시 
  각 서비스 별로 JWT 해석기가 필요하며, JWT를 사용 시에는 인증서를 통해 jwt를 만들면 된다.
- jwt는 이미 토큰에 정보를 갖고 있기에 db에 대한 레이턴시가 OAuth token에 비해 많이 줄어든다. 각 유저 정보와 jwt 토큰 관리하는 스토리지가 존재하면 된다.
+ jwt는 이미 토큰에 정보를 갖고 있기에 db에 대한 레이턴시가 OAuth token에 비해 많이 줄어든다. 각 유저 정보와 jwt 토큰 관리하는 스토리지(redis)가 존재하면 된다.
   
 - refresh token
  1. 로그인 성공 시에 Access Token, Refresh Token을 발급.  
@@ -124,7 +128,23 @@ at org.springframework.cloud.netflix.zuul.filters.route.SimpleHostRoutingFilter.
 connection refuse ~
 ```
 
-동적라우팅 적용 예정
+동적라우팅 적용 예정  
+
+## zuul filter
+```java
+    @Override
+    public boolean shouldFilter() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        ...
+        if (auth instanceof OAuth2Authentication) {
+            ...
+            return true;
+        }
+        return false;
+    }
+```  
+shouldFilter를 통해 인증을 먼저 체크
+run() 메소드에서 민감한 uri, url 리다이렉트  
 
 ## Keys Points of Sample
 

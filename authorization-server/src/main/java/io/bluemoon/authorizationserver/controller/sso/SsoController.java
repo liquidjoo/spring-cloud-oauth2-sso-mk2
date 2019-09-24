@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,6 +49,23 @@ public class SsoController {
         consumerTokenServices.revokeToken(accessToken.getValue());
         HttpSession httpSession = request.getSession();
         httpSession.invalidate();
+    }
+
+    @RequestMapping("/rending")
+    public String rending(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession httpSession = request.getSession();
+        httpSession.invalidate();
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie: cookies) {
+                cookie.setPath("/");
+                cookie.setSecure(true);
+                cookie.setMaxAge(0);
+
+                response.addCookie(cookie);
+            }
+        }
+        return "redirect:/login";
     }
 
 

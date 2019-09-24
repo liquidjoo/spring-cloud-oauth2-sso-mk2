@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 @Configuration
 @EnableOAuth2Sso
 @EnableResourceServer
-@Order(value = 0)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
 //    @Bean
@@ -40,11 +39,8 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/", "/mk-auth/**", "/login").permitAll().anyRequest().authenticated()
                 .and()
-//                .csrf().requireCsrfProtectionMatcher(csrfRequestMatcher()).csrfTokenRepository(csrfTokenRepository())
-//                .and()
-//                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
-                .logout().permitAll()
-                .logoutSuccessUrl("/");
+        .logout().logoutSuccessUrl("/gateway/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout")).invalidateHttpSession(true).deleteCookies("JSESSIONID").clearAuthentication(true);
+
     }
 
     private RequestMatcher csrfRequestMatcher() {
