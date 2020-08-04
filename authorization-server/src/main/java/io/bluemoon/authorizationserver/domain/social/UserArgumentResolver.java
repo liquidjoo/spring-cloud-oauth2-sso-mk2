@@ -12,7 +12,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -58,6 +57,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * 인증된 User 객체를 만드는 메인 메서드
+     *
      * @param user
      * @param session
      * @return
@@ -92,7 +92,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
                 List<UserRole> userRoles = userRoleRepository.findByUser(user);
                 // role 부여
 
-               setRoleIfNotSame(user, authentication, map, userRoles);
+                setRoleIfNotSame(user, authentication, map, userRoles);
                 session.setAttribute("user", user);
             } catch (ClassCastException e) {
                 return user;
@@ -104,6 +104,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * 사용자의 인증된 소셜 미디어 타입에 따라 빌더를 사용하여 User 객체를 만들어 주는 가교 역할
+     *
      * @param authority
      * @param map
      * @return
@@ -117,6 +118,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * 페이스북이나 구글 같이 공통되는 명명규칙을 가진 그룹을 맵핑
+     *
      * @param socialType
      * @param map
      * @return
@@ -156,6 +158,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     /**
      * 인증된 authentication이 권한을 갖고 있는지 체크하는 용도
      * 만약 저장된 User 권한이 없으면 SecurityContextHolder를 사용하여 해당 소셜미디어 타입으로 권한을 저장
+     *
      * @param user
      * @param authentication
      * @param map

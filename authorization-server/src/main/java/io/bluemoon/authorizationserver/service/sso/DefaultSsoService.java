@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -17,11 +18,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class SsoServiceImpl implements SsoService{
+public class DefaultSsoService implements SsoService {
     private AccessTokenRepository accessTokenRepository;
     private ClientRepository clientRepository;
 
-    public SsoServiceImpl(
+    public DefaultSsoService(
             AccessTokenRepository accessTokenRepository,
             ClientRepository clientRepository
     ) {
@@ -44,13 +45,11 @@ public class SsoServiceImpl implements SsoService{
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
 
-            byte[] bytes = digest.digest(value.getBytes("UTF-8"));
+            byte[] bytes = digest.digest(value.getBytes(StandardCharsets.UTF_8));
             return String.format("%032x", new BigInteger(1, bytes));
 
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("MD5 algorithm not avilable. Fatal (should be in the JDK).");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not available.  Fatal (should be in the JDK).");
         }
     }
 

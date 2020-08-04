@@ -29,6 +29,6 @@ public class CustomOAuthExceptionSerializer extends StdSerializer<CustomOAuthExc
                 gen.writeStringField(key, add);
             }
         }
-        gen.writeEndObject();;
+        gen.writeEndObject();
     }
 }

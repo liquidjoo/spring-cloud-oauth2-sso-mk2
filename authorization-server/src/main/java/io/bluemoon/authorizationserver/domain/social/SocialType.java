@@ -1,8 +1,6 @@
 package io.bluemoon.authorizationserver.domain.social;
 
-import lombok.Getter;
-
-public enum  SocialType {
+public enum SocialType {
     FACEBOOK("facebook"),
     GOOGLE("google"),
     UNEEDCOMMS("uneedcomms");

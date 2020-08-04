@@ -1,11 +1,10 @@
 package io.bluemoon.authorizationserver.config;
 
-import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
+import io.bluemoon.authorizationserver.service.user.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -21,10 +20,8 @@ import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeSe
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
-import java.security.KeyPair;
 
 
 
@@ -47,7 +44,7 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
     private ClientDetailsService clientDetailsService;
     private AuthenticationManager authenticationManager;
     private DataSource dataSource;
-    private CustomUserDetailsServiceImpl customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     public OAuth2SsoServerConfig(
 //            AuthorizationCodeServices authorizationCodeServices,
@@ -55,7 +52,7 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
             ClientDetailsService clientDetailsService,
             AuthenticationManager authenticationManager,
             DataSource dataSource,
-            CustomUserDetailsServiceImpl customUserDetailsService
+            CustomUserDetailsService customUserDetailsService
     ) {
 //        this.authorizationCodeServices = authorizationCodeServices;
 //        this.approvalStore = approvalStore;
@@ -75,9 +72,10 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
     }
 
     /**
-     *  OAuth2 서버가 작동하기 위한 Endpoint에 대한 정보를 설정
-     *  권한 부여 및 토큰 엔드 포인트와 토큰 서비스를 설정.
-     *  AuhorizationEndpoint가 지원하는 부여 유형을 정할 수 있음.
+     * OAuth2 서버가 작동하기 위한 Endpoint에 대한 정보를 설정
+     * 권한 부여 및 토큰 엔드 포인트와 토큰 서비스를 설정.
+     * AuhorizationEndpoint가 지원하는 부여 유형을 정할 수 있음.
+     *
      * @param endpoints
      * @throws Exception
      */
@@ -108,6 +106,7 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
      * 클라리언트 세부 사항 서비스의 메모리 내 or JDBC구현을 정의
      * JdbcClientDetailsService를 활용해 데이터베이스 테이블로 세부 정보를 업데이트 가능
      * AuthorizationServerConfigurer의 콜백
+     *
      * @param clients
      * @throws Exception
      */
@@ -123,6 +122,7 @@ public class OAuth2SsoServerConfig extends AuthorizationServerConfigurerAdapter 
      * 액세스 토큰을 만들 때 액세스 토콘을 수락하는 리소스가 나중에 참조 할 수 있도록 인증을 저장해야함
      * 액세스 토콘을 생성 권한 부여에 사용 된 인증을 로드하는데 사용됨.
      * 서버간에 데이터베이스를 공유 할 수 있는 경우!!
+     *
      * @param dataSource
      * @return
      */

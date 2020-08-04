@@ -7,7 +7,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +60,7 @@ public class SsoController {
         httpSession.invalidate();
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            for (Cookie cookie: cookies) {
+            for (Cookie cookie : cookies) {
                 cookie.setPath("/");
                 cookie.setSecure(true);
                 cookie.setMaxAge(0);
@@ -67,9 +70,6 @@ public class SsoController {
         }
         return "redirect:/login";
     }
-
-
-
 
 
 //    @GetMapping(value = "/{facebook|google|kakao}/complete")

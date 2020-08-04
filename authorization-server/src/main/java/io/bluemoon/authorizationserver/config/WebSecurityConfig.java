@@ -1,7 +1,7 @@
 package io.bluemoon.authorizationserver.config;
 
 import io.bluemoon.authorizationserver.config.handler.CustomAuthFailureHandler;
-import io.bluemoon.authorizationserver.service.user.CustomUserDetailsServiceImpl;
+import io.bluemoon.authorizationserver.service.user.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,15 +14,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.CharacterEncodingFilter;
+
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 
 @Configuration
 @EnableWebSecurity
@@ -32,18 +27,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     CustomAuthFailureHandler customAuthFailureHandler;
 
-    private CustomUserDetailsServiceImpl customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     public WebSecurityConfig(
-            CustomUserDetailsServiceImpl customUserDetailsService
+            CustomUserDetailsService customUserDetailsService
     ) {
         this.customUserDetailsService = customUserDetailsService;
     }
+
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     /**
      * authentication processing
      * if success -> Authentication in info object return
      * els fail -> Exception
      * impl 구현체 -> authentication provider 에서 구현해서 authentication object를 던져줌
+     *
      * @return AuthenticationManager
      * @throws Exception
      */
@@ -59,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        --------------------------------- sso test
         http.formLogin().loginPage("/login").permitAll().failureHandler(customAuthFailureHandler)
                 .and()
-                .requestMatchers().antMatchers("/login/**","/oauth/authorize")
+                .requestMatchers().antMatchers("/login/**", "/oauth/authorize")
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
@@ -72,7 +74,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-
     /**
      * authentication Object managing
      *
@@ -83,6 +84,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
+
+//    @Bean
+//    @SuppressWarnings("deprecation")
+//    public static NoOpPasswordEncoder passwordEncoder() {
+//        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+//    }
 
     /**
      * user info at database for make authentication object
@@ -95,17 +102,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
-    }
-
-//    @Bean
-//    @SuppressWarnings("deprecation")
-//    public static NoOpPasswordEncoder passwordEncoder() {
-//        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-//    }
-
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 

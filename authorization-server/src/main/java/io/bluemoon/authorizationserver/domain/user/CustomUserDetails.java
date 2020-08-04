@@ -1,6 +1,5 @@
 package io.bluemoon.authorizationserver.domain.user;
 
-import io.bluemoon.authorizationserver.domain.social.SocialType;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role: userRole) {
+        for (String role : userRole) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;

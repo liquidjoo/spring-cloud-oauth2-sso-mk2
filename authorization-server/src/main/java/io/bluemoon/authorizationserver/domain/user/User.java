@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -45,7 +44,6 @@ public class User {
 
     @Column
     private LocalDateTime updatedAt;
-
 
 
 //    //1:수퍼관리자, 2:관리자, 3:사용자
