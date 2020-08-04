@@ -8,7 +8,6 @@
 
 ## 설명 *() 괄호 안의 내용은 프로젝트 이름*
 - 스프링 클라우드를 사용해서 만든 OAuth2 SSO 시스템 개발. *(gateway-zuul, Authorization-server)*
-- 스프링 클라우들 사용해서 만들 OAuth 2.0 시스템 *(zuul-oauth2, Authorization-server2)*
 
 ## 환경
 - java 8

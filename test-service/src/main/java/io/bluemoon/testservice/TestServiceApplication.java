@@ -66,20 +66,7 @@ public class TestServiceApplication {
         public String helloMk2Secret(Principal principal) {
             return principal == null ? "hello anonymous" : "heelo" + principal.getName();
         }
-
-        @RequestMapping(method = RequestMethod.GET, value = "test")
-        @ResponseBody
-        public String test() {
-            return "test";
-        }
-    }
-
-    @RestController("/tests")
-    public static class TestController2 {
-        @RequestMapping(method = RequestMethod.DELETE)
-        public void test(@RequestParam String test) {
-            System.out.println(test);
-        }
+        
     }
 
 }
