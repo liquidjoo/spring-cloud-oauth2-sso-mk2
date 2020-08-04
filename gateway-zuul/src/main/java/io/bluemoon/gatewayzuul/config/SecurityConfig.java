@@ -28,12 +28,6 @@ import java.util.regex.Pattern;
 @EnableResourceServer
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
-//    @Bean
-//    @Primary
-//    public OAuth2ClientContextFilter dynamicOauth2ClientContextFilter() {
-//        return new DynamicOauth2ClientContextFilter();
-//    }
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()

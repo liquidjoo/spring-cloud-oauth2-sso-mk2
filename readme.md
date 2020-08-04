@@ -1,5 +1,5 @@
 
-# Zuul 과 Authorization Server를 통해 SSO 개발 (소셜 로그인 추가)
+# Zuul 과 Authorization Server를 통해 SSO 시스템 개발
 - overview
 - usage
 - gradle
@@ -15,9 +15,8 @@
 - Gradle
 
 
-## 목표
-가장 큰 목표는 SSO Login을 Zuul을 통해 AuthorizationServer에 대한 정보를 가리기 위함인데 아마 ```security.oauth2.client.user-authorization-uri```, ```security.oauth2.client.access-token-uri```   이 두부분에 uri에 url을 넣어서 그런것 같은데 설정이 잘 못되었는지 서비스 디스커버리를 쓰지 않아서인지 uri만 입력시에 잘못된 uri라고 뜨더군요..  
-혹시 알고 계신다면 pr을 주시면 수정하여 반영하겠습니다. 그 전에 고쳐진다면 수정해서 반영해놓겠습니다~!.  
+## 개발하다가
+개발을 하면서 약간의 이슈는 SSO Login을 Zuul을 통해 AuthorizationServer에 대한 정보를 가리기 위함인데 아마 ```security.oauth2.client.user-authorization-uri```, ```security.oauth2.client.access-token-uri```   이 두부분에 uri에 url을 넣어서 그런것 같은데 설정이 잘 못되었는지 서비스 디스커버리를 쓰지 않아서인지 uri만 입력시에 잘못된 uri라고 뜨더군요..    
 또 많은 예가 있었지만 AuthorizationServerConfigurerAdapter 의 config 설정이 in-memory로 되어 있어서 여러 유저가 존재할 때 mysql 기준으로 데이터베이스를 통해 인증을 할 수 있게 만들었습니다. 
 
 ## 인증 네트워크
@@ -37,6 +36,7 @@ security 내의 **security.oauth2.sso.login-path=/login** 프로퍼티 설정과
 zuul이 zuul proxy server, resource server 역할을 수행.  
     
 ```java
+    // SecurityConfig.java
     @Override
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
@@ -67,13 +67,15 @@ sso.login-path를 통해 인증서버와 통신 후 user-info-uri를 통해 인�
 ## Authorization Server (User Account and Authentication Service -> UAA)
 
 **권한 코드 방식(Authorization Code flow)** *[current project name = authorization-server]*    
-클라이언트가 다른 사용자 대신 특정 리소스에 접근을 요청할 때 사용되어짐.  
-리소스 접근을 위한 id, password, code(auth server)를 사용해서 리소스에 대한 엑세스 토큰 발급.  
-현재 SSO Login 시에 사용된 인증 방식으로 구현.  
-gateway-zuul 프로젝트 내에서 ```security.oauth2.sso.login-path=/login``` 의 프로퍼티를 사용해서 login page로 이동 시켜준다.  
+
+- 클라이언트가 다른 사용자 대신 특정 리소스에 접근을 요청할 때 사용되어짐.  
+- 리소스 접근을 위한 id, password, code(auth server)를 사용해서 리소스에 대한 엑세스 토큰 발급.  
+- 현재 SSO Login 시에 사용된 인증 방식으로 구현.  
+- gateway-zuul 프로젝트 내에서 ```security.oauth2.sso.login-path=/login``` 의 프로퍼티를 사용해서 login page로 이동 시켜준다.  
 물론 이 때 로그인패스는 UAA(auth server)의 로그인 페이지로 이동하며 properties(gateway-zuul)내의 client-id, client-secret, redirect_url 을 사용해 redirect_uri로 code를 발급 후
-id, password를 받기 위해 login page로 이동하게 되어진다.
-두 단계로 나누어서 설명 (위의 SSO Login Flow를 보게 되면 과정을 알 수가 있다.)
+id, password를 받기 위해 login page로 이동하게 되어진다.  
+
+- 두 단계로 나누어서 설명 (위의 SSO Login Flow를 보게 되면 과정을 알 수가 있다.)
 1. 코드 발급
 ```
 curl -X GET http://localhost/oauth/authorize -G -d "client_id=system" -d "scope=read" -d "grant_type=authorization_code" -d "response_type=code" -d "redirect_uri=http://localhost/login"
@@ -83,7 +85,9 @@ curl -X GET http://localhost/oauth/authorize -G -d "client_id=system" -d "scope=
 ``` 
 curl -u client_id:client_secret http://localhost/oauth/token -d "grant_type=authorization_code" -d "code=asdf" -d "scope=read" -d "redirect_uri=http://localhost/login" -d "username=blue" -d "password=moon"
 ```
-* 문제점 sso login form이 있는데 curl 을 통해 토큰을 발급하게 되면 로그인 페이지로 계속 리다이렉트 되어서 인증 토큰이 정상적으로 발급이 잘 안됨..(실력 부족 ㅜ)
+* ~~문제점 sso login form이 있는데 curl 을 통해 토큰을 발급하게 되면 로그인 페이지로 계속 리다이렉트 되어서 인증 토큰이 정상적으로 발급이 잘 안됨..(실력 부족 ㅜ)~~
+* SSO는 Form Login 필수, Zuul(Gateway)을 통해 권한을 필요로 하는 경로에 접근시 Security Session을 찾을 수 없을 때 Login Page로 강제 리다이렉트가 처리됨.
+* 위의 과정은 토큰을 받아서 Zuul 의 Routes에 직접적으로 접근할 때 사용할 수 있다.
 
 
 **리소스 소유자 암호 자격 증명 타입(Resource Owner Password Credentials Grant Type)** *[current project name = authorization-server2]*  
@@ -152,13 +156,15 @@ run() 메소드에서 민감한 uri, url 리다이렉트
 많은분들의 문서 및 레포지토리를 참고하여 만들었습니다.
 
 ## 새로운 작업
-DDD 적용예정
-적용 예정 project [authorization server, authorization server2, test-service]
+~~DDD 적용예정~~
+전반적인 리팩토링
+적용 예정 project [authorization server, test-service]
 
 할 수 있는 부분은 자바8 사용 예정
 
 ## Ref
 ```
+https://spring.io/guides/topicals/spring-security-architecture
 https://github.com/kakawait/uaa-behind-zuul-sample
 https://github.com/keets2012/microservice-integration
 https://github.com/artemMartynenko/spring-cloud-gateway-oauth2-sso-sample-application
