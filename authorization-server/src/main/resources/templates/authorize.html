@@ -10,16 +10,16 @@
         protected resources
         with scope ${authorizationRequest.scope?join(", ")}.
     </p>
-    <form id="confirmationForm" name="confirmationForm"
-          action="../oauth/authorize" method="post">
-        <input name="user_oauth_approval" value="true" type="hidden"/>
-        <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <form action="../oauth/authorize" id="confirmationForm"
+          method="post" name="confirmationForm">
+        <input name="user_oauth_approval" type="hidden" value="true"/>
+        <input id="csrf_token" name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
         <button class="btn btn-primary" type="submit">Approve</button>
     </form>
-    <form id="denyForm" name="confirmationForm"
-          action="../oauth/authorize" method="post">
-        <input name="user_oauth_approval" value="false" type="hidden"/>
-        <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <form action="../oauth/authorize" id="denyForm"
+          method="post" name="confirmationForm">
+        <input name="user_oauth_approval" type="hidden" value="false"/>
+        <input id="csrf_token" name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
         <button class="btn btn-primary" type="submit">Deny</button>
     </form>
 </div>

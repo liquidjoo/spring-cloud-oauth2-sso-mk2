@@ -18,8 +18,8 @@ public class DynamicOauth2ClientContextFilter extends OAuth2ClientContextFilter 
     protected void redirectUser(UserRedirectRequiredException e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String redirectUri = e.getRedirectUri();
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUri);
-        Map<String, String > requestParams = e.getRequestParams();
-        for (Map.Entry<String ,String> param : requestParams.entrySet()) {
+        Map<String, String> requestParams = e.getRequestParams();
+        for (Map.Entry<String, String> param : requestParams.entrySet()) {
             builder.queryParam(param.getKey(), param.getValue());
         }
 

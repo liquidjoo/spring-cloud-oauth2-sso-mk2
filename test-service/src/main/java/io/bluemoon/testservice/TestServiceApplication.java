@@ -2,16 +2,16 @@ package io.bluemoon.testservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 
@@ -26,7 +26,7 @@ public class TestServiceApplication {
 
     @Controller
     @RequestMapping("/")
-    public static class TestController{
+    public static class TestController {
 
         @RequestMapping(method = RequestMethod.GET)
         @ResponseBody
@@ -36,7 +36,7 @@ public class TestServiceApplication {
             System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            OAuth2Authentication oAuth2Authentication = (OAuth2Authentication)authentication;
+            OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
             OAuth2AuthenticationDetails oAuth2AuthenticationDetails = (OAuth2AuthenticationDetails) oAuth2Authentication.getDetails();
 
 //            System.out.println(userDetails.getUsername());
@@ -66,7 +66,7 @@ public class TestServiceApplication {
         public String helloMk2Secret(Principal principal) {
             return principal == null ? "hello anonymous" : "heelo" + principal.getName();
         }
-        
+
     }
 
 }

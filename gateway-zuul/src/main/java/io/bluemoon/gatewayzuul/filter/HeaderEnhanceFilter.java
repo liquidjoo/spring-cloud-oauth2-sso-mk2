@@ -13,6 +13,5 @@ public class HeaderEnhanceFilter implements Filter {
         // test if request url is permit all, then remove authorization from header
 
 
-
     }
 }
